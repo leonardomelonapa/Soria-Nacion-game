@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soria Nación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Permanent+Marker&family=Rubik+Scribble&display=swap" rel="stylesheet">
+<style>
+/* Plan: diseño naive. Papel gris de póster, tinta negra de rotulador, cera morada, rojo de sello y ocre de estrella.
+   Marco editorial limpio (grotesca Archivo) que enmarca lo hecho a mano (Permanent Marker, Rubik Scribble y garabatos SVG).
+   Layout: móvil en horizontal compartido a la TV; escenas a pantalla completa sobre un tablero con cámara. */
+#sn{--u:4px; --w:8px; --h:4px;
+  --paper:#E3E3DC; --paper2:#D3D3C9; --sheet:#F8F7F2; --ink:#161616; --ink2:#4A4A44;
+  --pur:#B98AD6; --purl:#DCC6EC; --purd:#6E3A93; --red:#EF4B45; --ochre:#D9A93E; --note:#F4E48E;
+  --frame:'Archivo','Helvetica Neue',Arial,sans-serif;
+  --mark:'Permanent Marker','Marker Felt','Comic Sans MS',cursive;
+  --scrib:'Rubik Scribble','Permanent Marker','Marker Felt',cursive;
+  --r1:18px 7px 16px 9px / 9px 17px 8px 18px;
+  --r2:8px 18px 10px 16px / 16px 9px 18px 8px;
+  --rc:50% 46% 54% 48% / 48% 54% 46% 52%;
+  --bar:72px; color-scheme:light;}
+#sn,#sn *{box-sizing:border-box}
+#sn{position:fixed;inset:0;z-index:2147483000;overflow:hidden;overscroll-behavior:contain;background-color:var(--paper);background-image:var(--grain,none);color:var(--ink);font-family:var(--frame);font-size:18px;font-weight:400;line-height:1.25;letter-spacing:normal;text-align:left;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+#sn #sn-app{position:absolute;top:env(safe-area-inset-top,0px);right:env(safe-area-inset-right,0px);bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px);overflow:hidden}
+#sn input{-webkit-user-select:text;user-select:text;margin:0}
+#sn button{-webkit-appearance:none;appearance:none;margin:0;font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+#sn button:focus-visible,#sn input:focus-visible{outline:4px dashed var(--ink);outline-offset:4px}
+#sn h1,#sn h2,#sn h3{margin:0;font-weight:400;text-wrap:balance}
+#sn p{text-wrap:pretty}
+#sn svg{max-width:none}
+#sn .paper{background-color:var(--paper);background-image:var(--grain,none)}
+#sn .eyebrow{font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:clamp(11px,calc(3.1 * var(--u)),16px);line-height:1.2;color:var(--ink2)}
+#sn .scr{position:relative;isolation:isolate}
+#sn .scr::before{content:"";position:absolute;inset:-10% -6%;z-index:-1;background:var(--sc,var(--pur));opacity:var(--so,1);-webkit-mask:var(--m-scrib) center/100% 100% no-repeat;mask:var(--m-scrib) center/100% 100% no-repeat;pointer-events:none}
+#sn .sq{position:relative;width:fit-content;max-width:100%;padding-bottom:.12em}
+#sn .sq::after{content:"";position:absolute;left:0;right:0;bottom:-.12em;height:.24em;background:var(--uc,var(--red));-webkit-mask:var(--m-squig) left center/auto 100% repeat-x;mask:var(--m-squig) left center/auto 100% repeat-x;pointer-events:none}
+#sn .wave,#sn .wb{position:relative}
+#sn .wave::before,#sn .wave::after,#sn .wb::before,#sn .wb::after{content:"";position:absolute;left:0;right:0;height:12px;pointer-events:none;-webkit-mask-repeat:repeat-x;mask-repeat:repeat-x;-webkit-mask-size:auto 100%;mask-size:auto 100%;-webkit-mask-position:left bottom;mask-position:left bottom}
+#sn .wave::before{top:-11px;background:var(--wf,var(--paper2));-webkit-mask-image:var(--m-wavefill);mask-image:var(--m-wavefill)}
+#sn .wave::after{top:-11px;background:var(--ink);-webkit-mask-image:var(--m-wave);mask-image:var(--m-wave)}
+#sn .wb::before{bottom:-11px;transform:scaleY(-1);background:var(--wf,var(--sheet));-webkit-mask-image:var(--m-wavefill);mask-image:var(--m-wavefill)}
+#sn .wb::after{bottom:-11px;transform:scaleY(-1);background:var(--ink);-webkit-mask-image:var(--m-wave);mask-image:var(--m-wave)}
+#sn .pst .let{font-family:var(--mark);fill:var(--ink)}
+#sn .pst .sig{font-family:var(--mark);font-size:12px;fill:var(--ink)}
+#sn .btn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:.45em;min-height:48px;padding:.4em 1em;background:var(--sheet);color:var(--ink);border:3px solid var(--ink);border-radius:var(--r1);box-shadow:3px 4px 0 var(--ink);font-family:var(--frame);font-weight:800;font-size:clamp(14px,calc(4 * var(--u)),22px);line-height:1.05;text-align:center;text-transform:uppercase;letter-spacing:.03em;transition:transform .08s,box-shadow .08s}
+#sn .btn:nth-child(even){border-radius:var(--r2)}
+#sn .btn:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--ink)}
+#sn .btn.gold{background:var(--purl)}
+#sn .btn.gold::before{content:"";position:absolute;inset:3px 6px;z-index:-1;background:var(--pur);-webkit-mask:var(--m-scrib) center/100% 100% no-repeat;mask:var(--m-scrib) center/100% 100% no-repeat}
+#sn .btn.fraud{background:var(--red)}
+#sn .btn.ghost,#sn .btn.ink{background:transparent;box-shadow:none}
+#sn .btn.big{min-height:56px;font-family:var(--mark);font-weight:400;text-transform:none;letter-spacing:.02em;font-size:clamp(19px,calc(6 * var(--u)),36px)}
+#sn .btn.sm{min-height:44px;padding:.2em .75em;font-size:clamp(12px,calc(3.5 * var(--u)),18px)}
+#sn .btn[disabled]{opacity:.45;pointer-events:none}
+#sn .ico{width:1em;height:1em;flex:none}
+#sn .hd{display:block;border-radius:var(--rc);background:var(--bg-c,#fff);border:2px solid var(--ink)}
+#sn .sw{display:flex;align-items:center;gap:.5em;font-weight:700;font-size:1rem;cursor:pointer}
+#sn .sw input{-webkit-appearance:none;appearance:none;flex:none;width:30px;height:30px;margin:0;border:3px solid var(--ink);border-radius:6px 10px 5px 9px;background:var(--sheet);cursor:pointer}
+#sn .sw input:checked{background:var(--purl) var(--i-check) center/78% no-repeat}
+#sn .title{height:100%;display:flex;flex-direction:column;gap:calc(1.6 * var(--u));padding:calc(2.4 * var(--u)) calc(3.4 * var(--w)) calc(2.6 * var(--u))}
+#sn .meta{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;gap:12px;font-size:clamp(12px,calc(3.6 * var(--u)),20px);font-weight:500;letter-spacing:-.01em}
+#sn .meta span:nth-child(2){text-align:center}
+#sn .meta span:last-child{text-align:right;font-weight:800}
+#sn .tgrid{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:calc(3.4 * var(--w))}
+#sn .tl{min-width:0;display:flex;flex-direction:column;justify-content:space-between;gap:calc(1.4 * var(--u))}
+#sn .tl .top{display:flex;align-items:flex-start;gap:calc(2.2 * var(--w))}
+#sn .rmark{flex:none;width:clamp(30px,calc(10 * var(--u)),64px);height:clamp(30px,calc(10 * var(--u)),64px);margin-top:calc(.6 * var(--u))}
+#sn .logo{font-family:var(--scrib);font-size:min(calc(10 * var(--w)),calc(18 * var(--u)));line-height:.86;text-transform:uppercase;color:var(--ink)}
+#sn .logo span{color:var(--purd)}
+#sn .concept{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:calc(2.4 * var(--w));max-width:70ch}
+#sn .concept p{margin:0;font-size:clamp(12px,calc(3.7 * var(--u)),20px);line-height:1.2}
+#sn .concept b{font-weight:900;text-transform:uppercase}
+#sn .menu{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+#sn .hint{margin:0;font-size:clamp(12px,calc(3.3 * var(--u)),17px);color:var(--ink2)}
+#sn .pcard{position:relative;height:100%;aspect-ratio:3/4;background:var(--sheet);border:3px solid var(--ink);border-radius:var(--r2);box-shadow:6px 7px 0 var(--ink);overflow:hidden;transform:rotate(1.6deg)}
+#sn .pcard svg{display:block;width:100%;height:100%}
+#sn .tr{min-height:0;display:flex;align-items:center;justify-content:center;padding:calc(.6 * var(--u)) calc(.6 * var(--w)) calc(1.4 * var(--u))}
+#sn .tr .pcard{max-width:calc(40 * var(--w))}
+#sn.is-short .hint{display:none}
+#sn .setup{height:100%;display:flex;flex-direction:column}
+#sn .setup header{display:flex;align-items:flex-end;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;padding:calc(2.4 * var(--u)) calc(3.4 * var(--w)) calc(1.4 * var(--u))}
+#sn .setup header h2{font-weight:900;text-transform:uppercase;font-size:clamp(24px,calc(8.4 * var(--u)),56px);line-height:.88;letter-spacing:-.02em}
+#sn .setup header p{margin:0;max-width:40ch;font-size:clamp(13px,calc(3.8 * var(--u)),20px);color:var(--ink2)}
+#sn .setup .scroll{flex:1;min-height:0;overflow:auto;padding:10px calc(3.4 * var(--w)) 22px}
+#sn .setup footer{display:flex;align-items:center;justify-content:flex-end;gap:12px 18px;flex-wrap:wrap;padding:10px calc(3.4 * var(--w)) 12px;background:var(--paper2)}
+#sn .setup footer .sp{flex:1}
+#sn .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px 16px}
+#sn .tile{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px 10px;align-items:center;padding:10px 12px;background:var(--sheet);border:3px solid var(--ink);border-radius:var(--r1);box-shadow:4px 5px 0 var(--ink);transform:rotate(var(--rt,0deg))}
+#sn .tile:nth-child(3n+1){--rt:-.7deg}
+#sn .tile:nth-child(3n+2){--rt:.6deg;border-radius:var(--r2)}
+#sn .tile:nth-child(3n){--rt:-.2deg}
+#sn .tile.off{opacity:.5;box-shadow:none}
+#sn .tile .hd{width:58px;height:58px}
+#sn .tile .nmw{grid-column:2;min-width:0}
+#sn .tile .nm{font-family:var(--mark);font-size:1.65rem;line-height:1;color:var(--c)}
+#sn .tile .rl{font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:.8rem;line-height:1.15;color:var(--ink2)}
+#sn .tile input[type=text]{grid-column:1 / -1;width:100%;min-height:44px;padding:.25em .7em;font:inherit;font-size:1.1rem;font-weight:600;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:var(--r2)}
+#sn .tile input[type=text]::placeholder{color:#6A6A63}
+#sn .tile .sw{grid-column:3;grid-row:1}
+#sn #sn-stage{position:absolute;inset:0;overflow:hidden;background-color:var(--paper);background-image:var(--grain,none)}
+#sn #sn-cam{position:absolute;left:4px;top:4px;width:calc(100% - 8px);height:calc(100% - var(--bar) - 8px);transform-origin:0 0;will-change:transform;transition:transform 1.1s cubic-bezier(.65,0,.25,1)}
+#sn .board{position:relative;width:100%;height:100%;container-type:size;display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,1fr));gap:6px;padding:8px}
+#sn .cell{--cw:calc(100cqw / var(--cols));font-size:calc(var(--cw) * .14);position:relative;isolation:isolate;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;background:var(--sheet);color:var(--ink);border:2px solid var(--ink);border-radius:var(--r1);text-align:center;transform:rotate(var(--rot,0deg))}
+#sn .cell:nth-child(even){border-radius:var(--r2)}
+#sn .cell::before{content:"";position:absolute;inset:-8%;z-index:-1;background:var(--sc,transparent);opacity:.36;-webkit-mask:var(--m-scrib) center/100% 100% no-repeat;mask:var(--m-scrib) center/100% 100% no-repeat}
+#sn .cell.k-norm::before{display:none}
+#sn .cell .st{display:flex;align-items:flex-start;justify-content:space-between;gap:2px;padding:.2em .4em 0;line-height:1}
+#sn .cell .num{font-family:var(--mark);font-size:1.55em}
+#sn .cell .avs{display:flex;gap:2px}
+#sn .cell .avs .hd{width:1.55em;height:1.55em;border-width:1.5px}
+#sn .cell .lab{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 .3em;line-height:1.02;font-size:1.06em;font-weight:750;font-stretch:84%;overflow:hidden;text-shadow:0 0 3px var(--sheet),0 0 2px var(--sheet)}
+#sn .cell .lab span{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+#sn .cell .toks{display:flex;flex-wrap:wrap;justify-content:center;gap:1px;padding:1px 1px 2px}
+#sn .tok{width:calc(var(--cw) * .28);height:calc(var(--cw) * .28);border-radius:var(--rc);border:2px solid var(--ink);background:var(--bg-c);box-shadow:0 0 0 1.5px var(--c);overflow:hidden}
+#sn .toks.many .tok{width:calc(var(--cw) * .21);height:calc(var(--cw) * .21);border-width:1.5px}
+#sn .toks.lots .tok{width:calc(var(--cw) * .165);height:calc(var(--cw) * .165);border-width:1.5px;box-shadow:none}
+#sn .tok svg{width:100%;height:100%;display:block}
+#sn .tok.me{position:relative;z-index:1;box-shadow:0 0 0 3px var(--red);animation:sn-bob 1s ease-in-out infinite}
+@keyframes sn-bob{50%{transform:translateY(-12%) scale(1.15)}}
+#sn .cell.k-start{--sc:#3E9B57}
+#sn .cell.k-end{--sc:var(--ochre)}
+#sn .cell.k-ref{--sc:var(--red)}
+#sn .cell.k-jail{background-image:repeating-linear-gradient(90deg,transparent 0 .75em,rgba(22,22,22,.2) .75em .92em)}
+#sn .cell.cur{border-width:3px}
+#sn #sn-ring{position:absolute;z-index:3;pointer-events:none;overflow:visible;transition:left .45s ease,top .45s ease,width .45s ease,height .45s ease}
+#sn #sn-ring path{fill:none;stroke:var(--red);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+#sn #sn-hud{position:absolute;inset:0;z-index:5;pointer-events:none}
+#sn .bar{position:absolute;left:0;right:0;bottom:0;height:var(--bar);display:flex;flex-direction:column;justify-content:center;background:var(--paper2);pointer-events:auto;animation:sn-up .35s ease-out}
+@keyframes sn-up{from{transform:translateY(100%)}}
+#sn .bar .r1{flex:1;min-height:0;display:flex;align-items:center;gap:10px;padding:6px 12px;flex-wrap:wrap;align-content:center}
+#sn .bar .r1 > .hd{width:calc(min(var(--bar),96px) - 22px);height:calc(min(var(--bar),96px) - 22px);max-width:72px;max-height:72px;min-width:40px;min-height:40px;flex:none;border-width:3px}
+#sn .bar .pi{min-width:0;flex:1 1 180px;line-height:1.05}
+#sn .bar .pi b{display:block;font-family:var(--mark);font-weight:400;font-size:clamp(18px,calc(6 * var(--u)),34px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sn .bar .pi span{display:block;font-weight:700;font-size:clamp(12px,calc(3.6 * var(--u)),19px);color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sn .bar .cta{min-height:clamp(46px,calc(12 * var(--u)),64px);font-family:var(--mark);font-weight:400;text-transform:none;letter-spacing:.02em;font-size:clamp(19px,calc(5.8 * var(--u)),34px);padding:.2em .9em}
+#sn .bar .nts{display:flex;gap:8px;padding:6px 12px 0;overflow:hidden}
+#sn .nt{flex:none;max-width:calc(60 * var(--w));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;font-size:clamp(12px,calc(3.4 * var(--u)),17px);padding:.15em .6em;background:var(--note);color:var(--ink);border:2px solid var(--ink);border-radius:var(--r2);transform:rotate(-1deg)}
+#sn .nt:nth-child(even){transform:rotate(1deg)}
+#sn .splash{position:absolute;left:50%;top:calc((100% - var(--bar)) / 2);max-width:94%;display:flex;align-items:center;gap:calc(2.4 * var(--w));padding:calc(2.2 * var(--u)) calc(3 * var(--w));background:var(--sheet);color:var(--ink);border:4px solid var(--ink);border-radius:var(--r1);box-shadow:6px 8px 0 var(--ink);pointer-events:none;animation:sn-splash 2.6s ease forwards;white-space:nowrap}
+#sn .splash .hd{width:clamp(56px,calc(20 * var(--u)),140px);height:clamp(56px,calc(20 * var(--u)),140px);border-width:4px}
+#sn .splash small{display:block;font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:clamp(11px,calc(3.4 * var(--u)),20px);color:var(--ink2)}
+#sn .splash b{display:block;font-family:var(--mark);font-weight:400;font-size:clamp(30px,calc(13 * var(--u)),96px);line-height:1;color:var(--c);padding:.04em .12em;margin:.08em 0}
+@keyframes sn-splash{0%{opacity:0;transform:translate(-50%,-50%) scale(.5) rotate(-6deg)}14%{opacity:1;transform:translate(-50%,-50%) scale(1.06) rotate(-2deg)}22%{transform:translate(-50%,-50%) scale(1) rotate(-2deg)}78%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-2deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(.9) rotate(-2deg)}}
+#sn #sn-layer{position:absolute;inset:0;z-index:10;pointer-events:none}
+#sn .scene{position:absolute;inset:0;display:flex;flex-direction:column;pointer-events:auto;animation:sn-fade .35s ease-out;overflow:hidden;background-color:var(--paper);background-image:var(--grain,none);color:var(--ink)}
+@keyframes sn-fade{from{opacity:0}}
+@keyframes sn-slidein{from{opacity:0;transform:translateX(calc(5 * var(--w)))}}
+@keyframes sn-popin{from{transform:scale(.6) rotate(-8deg);opacity:0}}
+#sn .snav{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+#sn .dots{flex:1;display:flex;gap:8px}
+#sn .dots i{width:13px;height:13px;border:2px solid var(--ink);border-radius:var(--rc)}
+#sn .dots i.on{background:var(--ink)}
+#sn .sc-intro{padding:calc(2.4 * var(--u)) calc(3.4 * var(--w)) calc(2.4 * var(--u));gap:calc(1.6 * var(--u))}
+#sn .sc-intro .ibody{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:calc(3.4 * var(--w))}
+#sn .sc-intro .icol{min-width:0;display:flex;flex-direction:column;gap:calc(1.6 * var(--u))}
+#sn .sc-intro .k{font-weight:900;text-transform:uppercase;font-size:clamp(28px,calc(11 * var(--u)),96px);line-height:.88;letter-spacing:-.02em;animation:sn-slidein .5s cubic-bezier(.2,.9,.3,1.1)}
+#sn .sc-intro .tx{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:calc(1.6 * var(--u));animation:sn-slidein .6s .06s cubic-bezier(.2,.9,.3,1) both}
+#sn .sc-intro p{margin:0;font-size:clamp(15px,calc(4.8 * var(--u)),34px);line-height:1.2;max-width:40ch}
+#sn .sc-intro p b,#sn .hl{font-weight:800;background:linear-gradient(transparent 58%,var(--purl) 58%,var(--purl) 92%,transparent 92%)}
+#sn .chips3{display:flex;gap:calc(1.6 * var(--w));flex-wrap:wrap;padding:calc(.4 * var(--u)) 0}
+#sn .chips3 span{font-family:var(--mark);padding:.08em .6em;border:3px solid var(--ink);border-radius:var(--r1);background:var(--sheet);font-size:clamp(16px,calc(6 * var(--u)),42px);box-shadow:3px 4px 0 var(--ink);transform:rotate(-1deg)}
+#sn .chips3 span:nth-child(2){transform:rotate(1.4deg);border-radius:var(--r2)}
+#sn .chips3 span.so{--sc:var(--pur);transform:rotate(-3deg)}
+#sn .sc-intro .snav .btn.big{margin-left:auto;min-height:50px;font-size:clamp(18px,calc(5.6 * var(--u)),34px)}
+#sn .sc-intro .pcol{min-height:0;display:flex;align-items:center;padding:calc(.4 * var(--u)) calc(.6 * var(--w)) calc(1.2 * var(--u))}
+#sn .sc-intro .pcol .pcard{max-width:calc(36 * var(--w));animation:sn-popin .5s cubic-bezier(.2,1.3,.4,1)}
+#sn .sc-present{flex-direction:row;gap:calc(3.6 * var(--w));padding:calc(3 * var(--u)) calc(3.4 * var(--w)) calc(2.6 * var(--u))}
+#sn .sc-present .pa{position:relative;flex:none;height:100%;display:flex;align-items:center}
+#sn .sc-present .pa .pcard{max-width:calc(42 * var(--w));transform:rotate(-1.8deg);animation:sn-popin .55s cubic-bezier(.2,1.3,.4,1)}
+#sn .sc-present .numb{position:absolute;left:calc(-1 * var(--w));top:calc(-.6 * var(--u));z-index:2;width:clamp(44px,calc(14 * var(--u)),88px);height:clamp(44px,calc(14 * var(--u)),88px);display:grid;place-items:center;background:var(--red);border:3px solid var(--ink);border-radius:var(--rc);font-family:var(--mark);font-size:clamp(22px,calc(8 * var(--u)),50px);transform:rotate(-8deg)}
+#sn .sc-present .pb{flex:1;min-width:0;display:flex;flex-direction:column;gap:calc(1.6 * var(--u));overflow:hidden}
+#sn .sc-present .pbody{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:calc(1.3 * var(--u));padding:2px 6px 6px 2px}
+#sn .sc-present h2{font-family:var(--mark);font-size:clamp(32px,calc(14 * var(--u)),112px);line-height:.95;color:var(--c);--uc:var(--c);animation:sn-slidein .5s cubic-bezier(.2,.9,.3,1.1)}
+#sn .sc-present .role{font-weight:900;text-transform:uppercase;font-size:clamp(15px,calc(4.6 * var(--u)),30px);letter-spacing:-.01em;line-height:1}
+#sn .sc-present .by{align-self:flex-start;padding:.12em .7em;background:var(--note);border:2.5px solid var(--ink);border-radius:var(--r2);font-weight:700;font-size:clamp(13px,calc(3.8 * var(--u)),24px);transform:rotate(-1.2deg)}
+#sn .sc-present .ag{margin:0;font-size:clamp(13px,calc(3.6 * var(--u)),26px);line-height:1.2;max-width:46ch}
+#sn .sc-present .q{margin:0;align-self:flex-start;font-family:var(--mark);font-size:clamp(14px,calc(4.2 * var(--u)),30px);line-height:1.15;padding:.3em .8em;background:var(--sheet);border:3px solid var(--ink);border-radius:var(--r1);box-shadow:4px 4px 0 var(--c)}
+#sn .sc-present .snav{flex:none;justify-content:flex-end}
+#sn .sc-present .snav .btn.big{min-height:48px;font-size:clamp(19px,calc(5.6 * var(--u)),34px)}
+#sn .sc-dice{align-items:center;justify-content:center;gap:calc(3 * var(--u))}
+#sn .sc-dice .blob{position:absolute;left:50%;top:52%;width:min(calc(110 * var(--h)),calc(80 * var(--w)));height:min(calc(80 * var(--h)),calc(62 * var(--w)));transform:translate(-50%,-50%);pointer-events:none}
+#sn .sc-dice .who,#sn .sc-dice .row,#sn .sc-dice .res{position:relative;z-index:1}
+#sn .sc-dice .who{display:flex;align-items:center;gap:calc(1.4 * var(--w));font-family:var(--mark);font-size:clamp(22px,calc(8 * var(--u)),56px)}
+#sn .sc-dice .who .hd{width:clamp(40px,calc(14 * var(--u)),90px);height:clamp(40px,calc(14 * var(--u)),90px);border-width:3px}
+#sn .sc-dice .row{display:flex;gap:calc(5 * var(--w));align-items:center;justify-content:center}
+#sn .sc-dice .mot{width:min(calc(16 * var(--h)),calc(11 * var(--w)));height:min(calc(22 * var(--h)),calc(15 * var(--w)));flex:none}
+#sn .sc-dice .mot path{fill:none;stroke:var(--ink);stroke-width:5;stroke-linecap:round}
+#sn .sc-dice.rolling .mot{animation:sn-blink .18s steps(2) infinite}
+@keyframes sn-blink{50%{opacity:.25}}
+#sn .die{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);background:var(--sheet);border:4px solid var(--ink);border-radius:20% 14% 22% 16% / 16% 22% 14% 20%}
+#sn .die i{width:100%;height:100%;border-radius:46% 54% 50% 50% / 55% 45% 55% 45%}
+#sn .die i.on{background:var(--ink)}
+#sn .die i:nth-child(odd).on{border-radius:54% 46% 52% 48% / 45% 55% 45% 55%}
+#sn .bigdie{width:min(calc(44 * var(--h)),calc(32 * var(--w)));height:min(calc(44 * var(--h)),calc(32 * var(--w)));padding:8%;gap:5%;border-width:clamp(5px,calc(1.4 * var(--u)),9px);box-shadow:calc(.7 * var(--u)) calc(1.5 * var(--u)) 0 var(--ink);transition:transform .09s linear}
+#sn .two .bigdie{width:min(calc(36 * var(--h)),calc(25 * var(--w)));height:min(calc(36 * var(--h)),calc(25 * var(--w)))}
+#sn .bigdie.land{animation:sn-land .6s cubic-bezier(.3,1.7,.5,1)}
+@keyframes sn-land{0%{transform:scale(1.35) rotate(14deg)}100%{transform:scale(1) rotate(-2deg)}}
+#sn .sc-dice .res{font-family:var(--mark);font-size:clamp(26px,calc(10 * var(--u)),80px);line-height:1;min-height:1.1em;padding:.05em .3em;--sc:var(--note)}
+#sn .sc-dice .res.on{animation:sn-popin .45s cubic-bezier(.2,1.4,.4,1)}
+#sn .die.sm{width:clamp(44px,calc(13 * var(--u)),72px);height:clamp(44px,calc(13 * var(--u)),72px);padding:8%;border-width:3px}
+#sn .sc-card .hdr{flex:none;display:flex;align-items:center;gap:14px;padding:calc(1.6 * var(--u)) calc(2.4 * var(--w)) calc(1.4 * var(--u));background:var(--sheet);z-index:2}
+#sn .no{flex:none;width:clamp(40px,calc(13 * var(--u)),70px);height:clamp(40px,calc(13 * var(--u)),70px);display:grid;place-items:center;background:var(--sheet);border:3px solid var(--ink);border-radius:var(--rc);font-family:var(--mark);font-size:clamp(20px,calc(7 * var(--u)),40px);transform:rotate(-4deg)}
+#sn .sc-card .ht{flex:1;min-width:0;display:flex;flex-direction:column;gap:calc(.3 * var(--u))}
+#sn .sc-card h2{font-family:var(--mark);font-size:clamp(20px,calc(7.6 * var(--u)),54px);line-height:1;--uc:var(--c)}
+#sn .sc-card .main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,4fr) minmax(0,6fr);gap:calc(2.6 * var(--w));padding:calc(2.8 * var(--u)) calc(2.6 * var(--w)) calc(2.4 * var(--u))}
+#sn .sc-card .main.noart{grid-template-columns:1fr;padding:0}
+#sn .sc-card .art{min-height:0;display:flex;flex-direction:column;background:var(--sheet);border:3px solid var(--ink);border-radius:var(--r2);box-shadow:5px 6px 0 var(--ink);overflow:hidden;transform:rotate(-1.2deg)}
+#sn .sc-card .art svg{flex:1 1 auto;min-height:0;width:100%;height:100%;display:block}
+#sn .sc-card .cap{flex:none;padding:.35em .8em;border-top:3px solid var(--ink);text-align:center;font-weight:700;font-size:clamp(12px,calc(3.6 * var(--u)),21px)}
+#sn .sc-card .txt{min-height:0;overflow:auto;display:flex;flex-direction:column;gap:calc(2 * var(--u));font-size:clamp(16px,calc(5.2 * var(--u)),36px);line-height:1.22}
+#sn .sc-card .txt p{margin:0}
+#sn .banner{align-self:flex-start;padding:.14em .7em;background:var(--c);color:#fff;border:2.5px solid var(--ink);border-radius:var(--r1);font-weight:900;text-transform:uppercase;letter-spacing:.05em;font-size:.6em;transform:rotate(-1.5deg)}
+#sn .banner.other{background:var(--sheet);color:var(--ink)}
+#sn .sc-card .alt{font-size:.7em;border-top:3px dashed var(--ink);padding-top:calc(1.2 * var(--u));line-height:1.3}
+#sn .lines{display:flex;flex-direction:column;gap:calc(1.1 * var(--u))}
+#sn .lines div{display:flex;gap:.5em;align-items:flex-start;animation:sn-slidein .4s both}
+#sn .lines div::before{content:"";flex:none;width:.82em;height:.82em;margin-top:.16em;background:var(--c);-webkit-mask:var(--m-star) center/contain no-repeat;mask:var(--m-star) center/contain no-repeat}
+#sn .lines div:nth-child(2){animation-delay:.12s}
+#sn .lines div:nth-child(3){animation-delay:.24s}
+#sn .lines div:nth-child(4){animation-delay:.36s}
+#sn .sc-card .drow{display:flex;gap:12px}
+#sn .sc-card .acts{flex:none;display:flex;flex-wrap:wrap;gap:10px;padding:calc(1.4 * var(--u)) calc(2 * var(--w)) calc(2 * var(--u));background:var(--paper2)}
+#sn .sc-card .acts .btn{flex:1 1 190px}
+#sn .sc-card .acts .btn.ink{flex:0 1 auto}
+#sn .picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;padding:calc(2.8 * var(--u)) calc(2.6 * var(--w));overflow:auto;align-content:start}
+#sn .pick{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--sheet);border:3px solid var(--ink);border-radius:var(--r1);box-shadow:3px 4px 0 var(--ink);text-align:left;color:var(--ink);transform:rotate(-.6deg)}
+#sn .pick:nth-child(even){border-radius:var(--r2);transform:rotate(.6deg)}
+#sn .pick:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--ink)}
+#sn .pick.sel{background:var(--purl)}
+#sn .pick .hd{width:clamp(40px,calc(12 * var(--u)),56px);height:clamp(40px,calc(12 * var(--u)),56px);flex:none}
+#sn .pick b{display:block;font-family:var(--mark);font-weight:400;font-size:clamp(17px,calc(5 * var(--u)),27px);line-height:1.05}
+#sn .pick span{font-weight:700;font-size:clamp(12px,calc(3.5 * var(--u)),17px);color:var(--ink2)}
+#sn.is-portrait .tgrid{grid-template-columns:1fr;align-content:center}
+#sn.is-portrait .tr{display:none}
+#sn.is-portrait .concept{grid-template-columns:1fr;gap:10px}
+#sn.is-portrait .logo{font-size:min(calc(19 * var(--w)),calc(12 * var(--h)))}
+#sn.is-portrait .tl{justify-content:center;gap:calc(2.4 * var(--h))}
+#sn.is-portrait .sc-intro .ibody{grid-template-columns:1fr}
+#sn.is-portrait .sc-intro .pcol{display:none}
+#sn.is-portrait .sc-card .main{grid-template-columns:1fr;grid-template-rows:minmax(0,calc(32 * var(--h))) minmax(0,1fr);gap:calc(2.4 * var(--h))}
+#sn.is-portrait .sc-card .txt{font-size:clamp(17px,calc(5.2 * var(--w)),26px)}
+#sn.is-portrait .bar .pi{flex:1 1 60%}
+#sn.is-portrait .bar .cta{flex:1 1 100%}
+#sn.is-portrait .bar .r1 > .btn.sm{flex:1 1 auto}
+#sn.is-portrait .sc-present{flex-direction:column;gap:calc(2 * var(--h))}
+#sn.is-portrait .sc-present .pa{height:calc(34 * var(--h));align-self:center}
+#sn.is-portrait .sc-present .pa .pcard{max-width:none}
+#sn.is-portrait .splash b,#sn.is-portrait .splash small{white-space:normal}
+#sn.is-portrait .win{grid-template-columns:1fr}
+#sn.is-portrait .win .pw{display:none}
+#sn #sn-top{position:absolute;inset:0;z-index:20;pointer-events:none}
+#sn .ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(8px,calc(3 * var(--u)),28px);background:rgba(22,22,22,.55);pointer-events:auto}
+#sn .card{--c:var(--red);width:min(980px,100%);max-height:100%;display:flex;flex-direction:column;background:var(--sheet);color:var(--ink);border:4px solid var(--ink);border-radius:var(--r1);box-shadow:6px 8px 0 var(--ink);overflow:hidden;animation:sn-popin .25s ease-out;transform:rotate(-.4deg)}
+#sn .card .hdr{flex:none;display:flex;align-items:center;gap:12px;padding:calc(1.8 * var(--u)) 20px calc(1.4 * var(--u))}
+#sn .card .hdr h2{position:relative;width:fit-content;max-width:100%;padding-bottom:.12em;font-family:var(--mark);font-size:clamp(22px,calc(7 * var(--u)),44px);line-height:1}
+#sn .card .hdr h2::after{content:"";position:absolute;left:0;right:0;bottom:-.12em;height:.24em;background:var(--c);-webkit-mask:var(--m-squig) left center/auto 100% repeat-x;mask:var(--m-squig) left center/auto 100% repeat-x}
+#sn .card .acts{flex:none;display:flex;flex-wrap:wrap;gap:10px;padding:calc(1.4 * var(--u)) 16px calc(1.8 * var(--u));background:var(--paper2)}
+#sn .card .acts .btn{flex:1 1 160px}
+#sn .sheet{min-height:0;overflow:auto;padding:calc(1.4 * var(--u)) calc(2.4 * var(--w)) calc(2.4 * var(--u));font-size:clamp(15px,calc(4.4 * var(--u)),23px);line-height:1.32;display:flex;flex-direction:column;gap:calc(1.4 * var(--u))}
+#sn .sheet h3{font-weight:900;text-transform:uppercase;letter-spacing:.02em;font-size:1.05em;margin-top:.4em}
+#sn .sheet p{margin:0}
+#sn .sheet ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+#sn .adj{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px 14px;align-items:center}
+#sn .adj .nm{font-family:var(--mark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sn .ctl{display:flex;align-items:center;gap:6px}
+#sn .ctl .btn{min-height:44px;min-width:44px;padding:0 .4em;box-shadow:2px 3px 0 var(--ink)}
+#sn .ctl output{min-width:2.2em;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+#sn .cfg{display:flex;gap:10px;flex-wrap:wrap;margin-top:.6em}
+#sn .score{display:flex;flex-direction:column;gap:10px}
+#sn .pl{display:flex;align-items:center;gap:12px;padding:6px 10px;border:2.5px solid var(--ink);border-radius:var(--r1);background:var(--paper)}
+#sn .pl:nth-child(even){border-radius:var(--r2)}
+#sn .pl.act{background:var(--purl)}
+#sn .pl .hd{width:clamp(38px,calc(11 * var(--u)),54px);height:clamp(38px,calc(11 * var(--u)),54px);flex:none}
+#sn .pl .t{min-width:0;flex:1;line-height:1.1}
+#sn .pl .t b{display:block;font-family:var(--mark);font-weight:400;font-size:1.15em}
+#sn .pl .t span{font-size:.82em;font-weight:600;color:var(--ink2)}
+#sn .pl .stat{display:flex;gap:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+#sn .pl .stat div{display:flex;flex-direction:column;align-items:center;line-height:1}
+#sn .pl .stat b{font-family:var(--mark);font-weight:400;font-size:1.6em}
+#sn .pl .stat small{font-size:.68em;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+#sn .pill{display:inline-block;padding:0 .5em;border:2px solid var(--ink);border-radius:var(--r2);font-family:var(--frame);font-size:.62em;font-weight:800;text-transform:uppercase;background:var(--red);color:var(--ink);margin-left:6px;vertical-align:middle}
+#sn .pill.j{background:var(--ink);color:var(--sheet)}
+#sn .win{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:calc(4 * var(--w));padding:calc(4 * var(--u)) calc(4.4 * var(--w));overflow:hidden;pointer-events:auto;background-color:var(--paper);background-image:var(--grain,none)}
+#sn .win .in{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:calc(2 * var(--u))}
+#sn .win h1{font-family:var(--scrib);font-size:clamp(36px,calc(15 * var(--u)),124px);line-height:.88;text-transform:uppercase}
+#sn .win h1 span{color:var(--purd)}
+#sn .win p{margin:0;font-size:clamp(15px,calc(4.8 * var(--u)),30px);line-height:1.2;max-width:34ch}
+#sn .win .row{display:flex;gap:12px;flex-wrap:wrap}
+#sn .win .pw{position:relative;z-index:2;height:calc(86 * var(--h));display:flex;align-items:center}
+#sn .win .pw .pcard{transform:rotate(2.4deg);animation:sn-popin .8s cubic-bezier(.2,1.4,.4,1)}
+#sn .conf{position:absolute;top:-8%;width:clamp(16px,calc(6 * var(--u)),36px);height:clamp(16px,calc(6 * var(--u)),36px);z-index:1;animation:sn-fall linear infinite}
+@keyframes sn-fall{to{transform:translateY(calc(118 * var(--h))) rotate(540deg)}}
+#sn .toast{position:absolute;left:50%;top:14px;z-index:60;max-width:calc(90 * var(--w));padding:.4em 1em;background:var(--note);color:var(--ink);border:3px solid var(--ink);border-radius:var(--r1);box-shadow:4px 5px 0 var(--ink);font-weight:800;font-size:clamp(15px,calc(4.8 * var(--u)),26px);text-align:center;transform:translateX(-50%) rotate(-1.5deg);animation:sn-fade .2s ease-out;pointer-events:none}
+@media (prefers-reduced-motion:reduce){#sn *{animation:none!important;transition:none!important}
+#sn #sn-cam{transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<div id="sn" lang="es"><svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs id="sn-defs"></defs></svg><div id="sn-app"></div></div>
+<script>
+(function(){
+'use strict';
+const ROOT=document.getElementById('sn'); if(!ROOT||ROOT.dataset.ready) return; ROOT.dataset.ready='1';
+const APP=document.getElementById('sn-app');
+function measure(){
+  const w=ROOT.clientWidth||window.innerWidth, h=ROOT.clientHeight||window.innerHeight; const port=h>w*1.1;
+  ROOT.style.setProperty('--w',(w/100).toFixed(3)+'px'); ROOT.style.setProperty('--h',(h/100).toFixed(3)+'px');
+  ROOT.style.setProperty('--u',Math.min(h/100, w*(port?0.007:0.0046)).toFixed(3)+'px');
+  ROOT.classList.toggle('is-portrait',port); ROOT.classList.toggle('is-short',h<=420);
+}
+measure();
+const CH = [{"name": "Don Patch", "role": "El Podemita", "acc": "#7B3FA0", "bg": "#EFE3F7", "mid": "#B57FD8", "svg": "<path d=\"M212 264 L210 306 M252 264 L254 306\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"203\" cy=\"311\" rx=\"16\" ry=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"261\" cy=\"311\" rx=\"16\" ry=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <defs><pattern id=\"kf\" width=\"12\" height=\"12\" patternUnits=\"userSpaceOnUse\"><rect width=\"12\" height=\"12\" fill=\"#fff\"/><rect width=\"6\" height=\"6\" fill=\"#111\"/><rect x=\"6\" y=\"6\" width=\"6\" height=\"6\" fill=\"#111\"/></pattern></defs> <path d=\"M176 196 Q232 184 288 196 L300 268 L164 268 Z\" fill=\"#8A3FC0\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M240 222 L264 266 L232 266 Z\" fill=\"url(#kf)\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M178 192 Q232 216 286 192 L282 214 Q232 238 182 214 Z\" fill=\"url(#kf)\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <g transform=\"rotate(-14 200 236)\"><rect x=\"196\" y=\"194\" width=\"9\" height=\"50\" fill=\"#777\" stroke=\"#111\" stroke-width=\"3\"/><rect x=\"196\" y=\"194\" width=\"9\" height=\"6\" fill=\"#222\"/></g> <path d=\"M206 240 Q206 222 224 224 Q232 234 222 242 Z\" fill=\"#C0272D\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"215\" cy=\"222\" r=\"3.5\" fill=\"#C0272D\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M182 236 L218 236 L218 264 L182 264 Z\" fill=\"#7230A3\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M182 208 L200 244\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M182 208 L200 244\" fill=\"none\" stroke=\"#8A3FC0\" stroke-width=\"9\" stroke-linecap=\"round\"/><circle cx=\"203\" cy=\"246\" r=\"10\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M198 242 L196 252 M204 244 L204 255 M210 242 L212 252\" fill=\"none\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M326 166 L342 190 L408 152 L386 108 Z\" fill=\"#E02929\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"372\" cy=\"146\" r=\"13\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M372 138 L375 144 L382 145 L377 150 L378 157 L372 153 L366 157 L367 150 L362 145 L369 144Z\" fill=\"#E02929\"/> <path d=\"M418 112 Q432 128 420 146 M428 100 Q448 128 430 156\" fill=\"none\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M284 210 L330 186\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M284 210 L330 186\" fill=\"none\" stroke=\"#8A3FC0\" stroke-width=\"9\" stroke-linecap=\"round\"/><circle cx=\"334\" cy=\"184\" r=\"10\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M168 86 L212 102 M296 86 L252 102\" fill=\"none\" stroke=\"#111\" stroke-width=\"7\" stroke-linecap=\"round\"/> <circle cx=\"194\" cy=\"116\" r=\"6\" fill=\"#111\"/><circle cx=\"270\" cy=\"116\" r=\"6\" fill=\"#111\"/> <path d=\"M198 166 Q232 138 266 166\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M312 58 q10 -2 12 8 M318 48 q-2 10 -12 12 M326 70 q4 10 -4 14\" fill=\"none\" stroke=\"#D6202A\" stroke-width=\"4\" stroke-linecap=\"round\"/>", "ag": "El azote del capital. Exige la colectivización de los pinares, la expropiación de la riqueza, la abolición absoluta de la caza y el fin de los privilegios eclesiásticos.", "vocab": "Casta, IBEX", "quote": "«LA CASTA TIENE MIEDO. Y yo tengo miedo de que vean mi escopeta.»", "slogan": ["¡LA CASTA", "TIEMBLA!"], "id": "patch"}, {"name": "Ivan", "role": "El Feminista", "acc": "#B8285F", "bg": "#FBE4EE", "mid": "#F08DB4", "svg": "<rect x=\"190\" y=\"262\" width=\"84\" height=\"12\" fill=\"#B9854F\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M198 274 L194 314 M266 274 L270 314\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"296\" cy=\"304\" r=\"17\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M296 296 L303 301 L300 309 L292 309 L289 301 Z\" fill=\"#111\"/> <path d=\"M296 287 L296 296 M303 301 L311 298 M300 309 L305 316 M292 309 L287 316 M289 301 L282 298\" fill=\"none\" stroke=\"#111\" stroke-width=\"2\"/> <path d=\"M224 276 L224 306 M242 276 L242 306\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"217\" cy=\"311\" rx=\"12\" ry=\"6\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"256\" cy=\"308\" rx=\"14\" ry=\"6\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M192 196 Q232 186 272 196 L277 268 L187 268 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <text x=\"232\" y=\"226\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"13\" text-anchor=\"middle\" fill=\"#111\">THE FUTURE</text> <text x=\"232\" y=\"244\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"13\" text-anchor=\"middle\" fill=\"#111\">IS FEMALE</text> <path d=\"M272 208 L292 252\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/> <path d=\"M272 208 L292 252\" fill=\"none\" stroke=\"#fff\" stroke-width=\"9\" stroke-linecap=\"round\"/> <circle cx=\"294\" cy=\"256\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M140 238 L140 262 M128 262 L152 262\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M122 190 L158 190 Q160 224 140 236 Q120 224 122 190 Z\" fill=\"#F4A6B8\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M194 210 L144 240\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M194 210 L144 240\" fill=\"none\" stroke=\"#fff\" stroke-width=\"9\" stroke-linecap=\"round\"/><circle cx=\"142\" cy=\"242\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M136 98 Q146 44 232 36 Q318 44 328 98 Q300 66 280 76 Q258 54 232 68 Q206 54 184 76 Q160 66 136 98 Z\" fill=\"#C9A0F0\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M190 44 L182 22 L206 38 M232 36 L238 14 L254 36 M284 46 L300 28 L296 56\" fill=\"#C9A0F0\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"194\" cy=\"116\" r=\"25\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"270\" cy=\"116\" r=\"25\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M219 112 L245 112 M169 112 L138 106 M295 112 L326 106\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"196\" cy=\"118\" r=\"5\" fill=\"#111\"/><circle cx=\"268\" cy=\"118\" r=\"5\" fill=\"#111\"/> <path d=\"M168 92 L208 80 M296 92 L256 80\" fill=\"none\" stroke=\"#111\" stroke-width=\"6\" stroke-linecap=\"round\"/> <path d=\"M208 166 Q220 154 232 166 Q244 178 256 166\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M334 70 Q326 88 334 96 Q342 88 334 70 Z M126 72 Q118 90 126 98 Q134 90 126 72 Z M318 128 Q312 140 318 146 Q324 140 318 128 Z\" fill=\"#6BB8F0\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "ag": "El mayor aliade y deconstruido de Soria. Campaña: erradicar los micromachismos, acabar con la masculinidad tóxica y promover talleres de nuevas masculinidades.", "vocab": "Micromachismo, deconstrucción", "quote": "«Perdón por ocupar espacio visual en esta carta, compañeres.»", "slogan": ["PERDÓN,", "COMPAÑERES"], "id": "ivan"}, {"name": "Elisa", "role": "La Cayetana de ICADE", "acc": "#3F6B3A", "bg": "#E4F0DF", "mid": "#93C47F", "svg": "<ellipse cx=\"128\" cy=\"318\" rx=\"92\" ry=\"12\" fill=\"#7A5230\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M70 316 Q90 312 112 318 M140 322 Q160 320 180 316\" fill=\"none\" stroke=\"#4A2F18\" stroke-width=\"3\" stroke-linecap=\"round\"/> <text x=\"128\" y=\"322\" font-family=\"Patrick Hand, sans-serif\" font-size=\"13\" text-anchor=\"middle\" fill=\"#F3E5D0\">(el pueblo)</text> <path d=\"M214 264 L213 292 M250 264 L251 292\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"213\" cy=\"304\" rx=\"8\" ry=\"13\" fill=\"#6B3E1E\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"251\" cy=\"304\" rx=\"8\" ry=\"13\" fill=\"#6B3E1E\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M192 196 Q232 186 272 196 L277 268 L187 268 Z\" fill=\"#BFE0F5\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M190 198 L214 208 L214 268 L187 268 Z\" fill=\"#3F6B3A\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M274 198 L250 208 L250 268 L277 268 Z\" fill=\"#3F6B3A\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M190 224 L214 230 M188 244 L214 250 M274 224 L250 230 M276 244 L250 250\" fill=\"none\" stroke=\"#1E3A1B\" stroke-width=\"2\"/> <path d=\"M272 208 L326 216\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/> <path d=\"M272 208 L326 216\" fill=\"none\" stroke=\"#3F6B3A\" stroke-width=\"9\" stroke-linecap=\"round\"/> <path d=\"M330 192 L330 236 M316 236 L344 236\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"330\" cy=\"164\" r=\"30\" fill=\"#E8F6F0\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M303 160 Q330 168 357 160 Q352 192 330 192 Q308 192 303 160Z\" fill=\"#CFEFE5\"/> <rect x=\"318\" y=\"170\" width=\"12\" height=\"12\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\" transform=\"rotate(12 324 176)\"/> <rect x=\"336\" y=\"164\" width=\"11\" height=\"11\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\" transform=\"rotate(-10 341 170)\"/> <circle cx=\"352\" cy=\"138\" r=\"12\" fill=\"#9ED84B\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M352 126 L352 150 M340 138 L364 138\" stroke=\"#4E8A1E\" stroke-width=\"2\"/> <circle cx=\"328\" cy=\"220\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M188 212 L176 250\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/> <path d=\"M188 212 L176 250\" fill=\"none\" stroke=\"#3F6B3A\" stroke-width=\"9\" stroke-linecap=\"round\"/> <circle cx=\"175\" cy=\"254\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M128 122 Q120 52 232 28 Q344 52 336 122 Q322 82 232 72 Q142 82 128 122 Z\" fill=\"#E8C872\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M130 100 Q120 152 142 186 Q164 160 154 108 Z M334 100 Q344 152 322 186 Q300 160 310 108 Z\" fill=\"#E8C872\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"194\" cy=\"112\" rx=\"17\" ry=\"11\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"270\" cy=\"112\" rx=\"17\" ry=\"11\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"194\" cy=\"118\" r=\"5\" fill=\"#111\"/><circle cx=\"270\" cy=\"118\" r=\"5\" fill=\"#111\"/> <path d=\"M176 108 Q194 98 212 108 M252 108 Q270 98 288 108\" fill=\"none\" stroke=\"#111\" stroke-width=\"6\" stroke-linecap=\"round\"/> <path d=\"M170 90 L212 96 M294 90 L252 96\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linecap=\"round\"/> <path d=\"M198 160 Q216 142 232 152 Q248 142 266 160 Q232 186 198 160 Z\" fill=\"#E0102B\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M214 196 L204 176 L232 200 Z M250 196 L260 176 L232 200 Z\" fill=\"#BFE0F5\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"206\" cy=\"206\" r=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"217\" cy=\"214\" r=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"232\" cy=\"218\" r=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"247\" cy=\"214\" r=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"258\" cy=\"206\" r=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "ag": "La élite financiera. Mirará a la plebe por encima del hombro y exigirá bajar los impuestos a las grandes fortunas y privatizar hasta el río Duero.", "vocab": "Plebe, impuestos, o sea", "quote": "«¿Soria? O sea, ¿eso está más allá de la M-30 o qué? Qué horror, o sea.»", "slogan": ["O SEA,", "QUÉ HORROR"], "id": "elisa"}, {"name": "Leo", "role": "El Ultra", "acc": "#B3201F", "bg": "#F6E1DC", "mid": "#EF7B6E", "svg": "<path d=\"M214 266 L212 296 L186 306 L184 324 L240 324 L240 266 Z\" fill=\"#1A1A1A\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M184 318 L240 318\" stroke=\"#F2C811\" stroke-width=\"5\"/> <path d=\"M214 276 L236 276 M214 284 L236 284 M212 292 L234 292\" stroke=\"#fff\" stroke-width=\"2.5\"/> <path d=\"M252 266 L284 276 L322 284 L334 296 L330 312 L284 316 L254 300 Z\" fill=\"#1A1A1A\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M254 306 L330 314\" stroke=\"#F2C811\" stroke-width=\"5\"/> <path d=\"M270 276 L284 284 M276 272 L292 280\" stroke=\"#fff\" stroke-width=\"2.5\"/> <circle cx=\"316\" cy=\"326\" r=\"4\" fill=\"#FFD93B\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M316 322 L316 310 M310 326 L304 326 M322 326 L328 326\" stroke=\"#4E8A1E\" stroke-width=\"2\"/> <path d=\"M184 196 Q232 184 280 196 L286 266 L178 266 Z\" fill=\"#4B5A2E\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M178 256 L286 256\" stroke=\"#E87A1E\" stroke-width=\"7\"/> <rect x=\"188\" y=\"214\" width=\"24\" height=\"18\" fill=\"#C33\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M192 224 q4 -6 8 0 t8 0\" fill=\"none\" stroke=\"#111\" stroke-width=\"2\"/> <rect x=\"194\" y=\"238\" width=\"18\" height=\"14\" fill=\"#F2C811\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M197 246 q3 -5 6 0 t6 0\" fill=\"none\" stroke=\"#111\" stroke-width=\"2\"/> <path d=\"M206 196 L202 262\" fill=\"none\" stroke=\"#111\" stroke-width=\"13\"/><path d=\"M206 196 L202 262\" fill=\"none\" stroke=\"#D6202A\" stroke-width=\"7\"/> <path d=\"M258 196 L262 262\" fill=\"none\" stroke=\"#111\" stroke-width=\"13\"/><path d=\"M258 196 L262 262\" fill=\"none\" stroke=\"#D6202A\" stroke-width=\"7\"/> <rect x=\"246\" y=\"206\" width=\"12\" height=\"30\" rx=\"4\" fill=\"#FFB8C8\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\" transform=\"rotate(10 252 221)\"/> <rect x=\"246\" y=\"200\" width=\"12\" height=\"9\" rx=\"2\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\" transform=\"rotate(10 252 204)\"/> <text x=\"252\" y=\"226\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"6.5\" text-anchor=\"middle\" fill=\"#111\" transform=\"rotate(-80 252 222)\">SPF 50</text> <rect x=\"244\" y=\"230\" width=\"22\" height=\"7\" fill=\"#4B5A2E\" stroke=\"#111\" stroke-width=\"2\"/> <path d=\"M186 208 L152 168\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M186 208 L152 168\" fill=\"none\" stroke=\"#4B5A2E\" stroke-width=\"9\" stroke-linecap=\"round\"/> <circle cx=\"148\" cy=\"162\" r=\"14\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M140 156 L156 156 M139 162 L157 162 M141 168 L155 168\" stroke=\"#111\" stroke-width=\"2\"/> <path d=\"M278 208 L300 250\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M278 208 L300 250\" fill=\"none\" stroke=\"#4B5A2E\" stroke-width=\"9\" stroke-linecap=\"round\"/> <path d=\"M304 252 L314 236\" stroke=\"#111\" stroke-width=\"7\" stroke-linecap=\"round\"/><path d=\"M304 252 L314 236\" stroke=\"#F08DB4\" stroke-width=\"3.5\" stroke-linecap=\"round\"/> <circle cx=\"322\" cy=\"220\" r=\"18\" fill=\"#F08DB4\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"322\" cy=\"220\" r=\"12\" fill=\"#D8EEF8\" stroke=\"#111\" stroke-width=\"2.5\"/> <path d=\"M316 214 L320 210 M314 220 L322 212\" stroke=\"#fff\" stroke-width=\"2.5\" stroke-linecap=\"round\"/> <circle cx=\"302\" cy=\"256\" r=\"10\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M140 100 Q128 30 232 24 Q336 30 324 100 Z\" fill=\"#1E1E1E\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M134 88 Q232 72 330 88 L332 108 Q232 94 132 108 Z\" fill=\"#2E2E2E\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M146 88.8 L146 102.0\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M158 89.6 L158 102.8\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M170 90.3 L170 103.7\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M182 91.0 L182 104.5\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M194 91.7 L194 105.3\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M206 92.4 L206 106.2\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M218 93.2 L218 107.0\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M230 93.9 L230 107.9\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M242 93.4 L242 107.3\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M254 92.7 L254 106.5\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M266 92.0 L266 105.6\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M278 91.2 L278 104.8\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M290 90.5 L290 103.9\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M302 89.8 L302 103.1\" stroke=\"#555\" stroke-width=\"2\"/><path d=\"M314 89.1 L314 102.3\" stroke=\"#555\" stroke-width=\"2\"/> <rect x=\"212\" y=\"78\" width=\"40\" height=\"14\" rx=\"2\" fill=\"#D6202A\" stroke=\"#111\" stroke-width=\"2\"/> <text x=\"232\" y=\"89\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"11\" text-anchor=\"middle\" fill=\"#fff\">SORIA</text> <path d=\"M168 110 L212 124 M296 110 L252 124\" fill=\"none\" stroke=\"#111\" stroke-width=\"8\" stroke-linecap=\"round\"/> <circle cx=\"192\" cy=\"136\" r=\"13\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"272\" cy=\"136\" r=\"13\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"194\" cy=\"137\" r=\"3.5\" fill=\"#111\"/><circle cx=\"270\" cy=\"137\" r=\"3.5\" fill=\"#111\"/> <rect x=\"200\" y=\"158\" width=\"64\" height=\"26\" rx=\"6\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M216 158 L216 184 M232 158 L232 184 M248 158 L248 184 M200 171 L264 171\" fill=\"none\" stroke=\"#111\" stroke-width=\"2.5\"/> <path d=\"M150 124 q-7 8 1 14 q8 6 -1 12 M314 124 q7 8 -1 14 q-8 6 1 12\" fill=\"none\" stroke=\"#D6202A\" stroke-width=\"3.5\" stroke-linecap=\"round\"/>", "ag": "Ultranacionalista de choque y callejero. Lidera las brigadas, exige expulsar a Valladolid y la pureza soriana absoluta.", "vocab": "Reconquista, pureza soriana, rojiprogres", "quote": "«¡MANO DURA Y PIEL DE MELOCOTÓN, CABRONES!»", "slogan": ["¡MANO DURA,", "PIEL SUAVE!"], "id": "leo"}, {"name": "Pablo", "role": "El Tecno-bro", "acc": "#1E2A44", "bg": "#DDE5F3", "mid": "#86A2D4", "svg": "<path d=\"M214 276 L212 306 M250 276 L252 306\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"205\" cy=\"311\" rx=\"16\" ry=\"7\" fill=\"#BEBEBE\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"259\" cy=\"311\" rx=\"16\" ry=\"7\" fill=\"#BEBEBE\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M186 250 L278 250 L282 280 L182 280 Z\" fill=\"#3D5A8A\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M190 190 Q232 182 274 190 L280 256 L184 256 Z\" fill=\"#1B1B1B\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M206 186 L258 186 L260 206 L204 206 Z\" fill=\"#2E2E2E\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M240 250 Q252 256 262 250\" fill=\"none\" stroke=\"#111\" stroke-width=\"2\"/> <rect x=\"246\" y=\"238\" width=\"22\" height=\"28\" fill=\"#D6202A\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\" transform=\"rotate(8 257 252)\"/> <text x=\"257\" y=\"258\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"10\" text-anchor=\"middle\" fill=\"#fff\" transform=\"rotate(8 257 252)\">UGT</text> <path d=\"M282 214 Q300 240 266 244\" fill=\"none\" stroke=\"#111\" stroke-width=\"7\" stroke-linecap=\"round\"/> <circle cx=\"262\" cy=\"244\" r=\"6\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M190 214 L216 246\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/> <path d=\"M190 214 L216 246\" fill=\"none\" stroke=\"#4A4A4A\" stroke-width=\"9\" stroke-linecap=\"round\"/> <path d=\"M274 214 L248 246\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/> <path d=\"M274 214 L248 246\" fill=\"none\" stroke=\"#4A4A4A\" stroke-width=\"9\" stroke-linecap=\"round\"/> <path d=\"M214 250 L226 222 L231 250 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M250 250 L238 222 L233 250 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M132 100 Q232 62 332 100\" fill=\"none\" stroke=\"#111\" stroke-width=\"12\" stroke-linecap=\"round\"/> <path d=\"M132 100 Q232 62 332 100\" fill=\"none\" stroke=\"#555\" stroke-width=\"6\" stroke-linecap=\"round\"/> <rect x=\"166\" y=\"42\" width=\"132\" height=\"46\" rx=\"20\" fill=\"#2E2E33\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <rect x=\"176\" y=\"50\" width=\"112\" height=\"30\" rx=\"14\" fill=\"#8DA2C0\" stroke=\"#111\" stroke-width=\"3\"/> <path d=\"M190 60 L214 60 M190 68 L204 68\" stroke=\"#fff\" stroke-width=\"3\" stroke-linecap=\"round\" opacity=\".8\"/> <path d=\"M176 118 Q192 108 208 118 Q192 126 176 118 Z M256 118 Q272 108 288 118 Q272 126 256 118 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"192\" cy=\"118\" r=\"3.5\" fill=\"#111\"/><circle cx=\"272\" cy=\"118\" r=\"3.5\" fill=\"#111\"/> <path d=\"M172 102 L212 102 M252 102 L292 102\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linecap=\"round\"/> <path d=\"M206 162 L254 162 L264 154\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <rect x=\"322\" y=\"196\" width=\"130\" height=\"114\" rx=\"6\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <text x=\"387\" y=\"222\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"15\" text-anchor=\"middle\" fill=\"#111\">POBRES = ROI</text> <path d=\"M334 236 L334 298 L444 298\" fill=\"none\" stroke=\"#111\" stroke-width=\"2.5\"/> <path d=\"M338 290 L356 270 L372 280 L394 252 L410 260 L434 238\" fill=\"none\" stroke=\"#1A9B4B\" stroke-width=\"5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M426 232 L440 232 L440 246 Z\" fill=\"#1A9B4B\"/>", "ag": "CEO de Palantir y capitalista sin escrúpulos. Cree que la empatía es una debilidad y quiere privatizar los servicios públicos con IA y vigilancia masiva.", "vocab": "Mindset, sinergias, disrupción", "quote": "«Tus sentimientos no escalan en el Q3. Privatiza tus emociones.»", "slogan": ["PRIVATIZA", "TUS EMOCIONES"], "id": "pablo"}, {"name": "Marcos", "role": "El Genderfluid", "acc": "#A64D00", "bg": "#FFEBD2", "mid": "#F5A25A", "svg": "<defs><pattern id=\"tt\" width=\"20\" height=\"20\" patternUnits=\"userSpaceOnUse\"><rect width=\"20\" height=\"20\" fill=\"#B3262E\"/><rect y=\"6\" width=\"20\" height=\"5\" fill=\"#1E5C3A\" opacity=\".85\"/><rect x=\"6\" width=\"5\" height=\"20\" fill=\"#1E5C3A\" opacity=\".85\"/><rect y=\"15\" width=\"20\" height=\"2\" fill=\"#F2D24B\"/><rect x=\"15\" width=\"2\" height=\"20\" fill=\"#F2D24B\"/></pattern></defs> <rect x=\"250\" y=\"176\" width=\"100\" height=\"22\" fill=\"#C60B1E\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"250\" y=\"198\" width=\"100\" height=\"44\" fill=\"#FFC400\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"250\" y=\"242\" width=\"100\" height=\"22\" fill=\"#C60B1E\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <rect x=\"334\" y=\"168\" width=\"26\" height=\"11\" fill=\"#F2E27A\" opacity=\".9\" transform=\"rotate(22 347 173)\"/> <rect x=\"240\" y=\"256\" width=\"26\" height=\"11\" fill=\"#F2E27A\" opacity=\".9\" transform=\"rotate(-20 253 261)\"/> <rect x=\"130\" y=\"170\" width=\"86\" height=\"92\" fill=\"#8B5A2B\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"140\" y=\"180\" width=\"66\" height=\"72\" fill=\"#E8D9B5\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <g fill=\"#4A3520\" stroke=\"#4A3520\"><circle cx=\"153\" cy=\"200\" r=\"4\"/><circle cx=\"172\" cy=\"200\" r=\"4\"/><circle cx=\"187\" cy=\"211\" r=\"3.5\"/><circle cx=\"199\" cy=\"215\" r=\"3.5\"/></g> <path d=\"M153 205 L153 234 M172 205 L172 234 M187 215 L187 234 M199 219 L199 234\" stroke=\"#4A3520\" stroke-width=\"3.5\" stroke-linecap=\"round\"/> <rect x=\"122\" y=\"164\" width=\"26\" height=\"11\" fill=\"#F2E27A\" opacity=\".9\" transform=\"rotate(-20 135 169)\"/> <ellipse cx=\"172\" cy=\"206\" rx=\"40\" ry=\"18\" transform=\"rotate(-40 172 206)\" fill=\"#E3C8FF\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"176\" cy=\"240\" rx=\"30\" ry=\"13\" transform=\"rotate(20 176 240)\" fill=\"#CFE8FF\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"292\" cy=\"206\" rx=\"40\" ry=\"18\" transform=\"rotate(40 292 206)\" fill=\"#E3C8FF\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"288\" cy=\"240\" rx=\"30\" ry=\"13\" transform=\"rotate(-20 288 240)\" fill=\"#CFE8FF\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M210 290 L208 308 M254 290 L256 308\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"200\" cy=\"313\" rx=\"17\" ry=\"8\" fill=\"#1A1A1A\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"264\" cy=\"313\" rx=\"17\" ry=\"8\" fill=\"#1A1A1A\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M190 196 Q232 186 274 196 L278 262 L186 262 Z\" fill=\"#6B7B3A\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <rect x=\"238\" y=\"214\" width=\"26\" height=\"22\" fill=\"#5C6B30\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M200 198 L214 262 M264 198 L250 262\" fill=\"none\" stroke=\"#222\" stroke-width=\"5\"/> <rect x=\"208\" y=\"226\" width=\"9\" height=\"9\" fill=\"#D9D9D9\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M184 256 L280 256 L294 292 L170 292 Z\" fill=\"url(#tt)\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <g transform=\"rotate(-8 76 182)\"><rect x=\"14\" y=\"150\" width=\"124\" height=\"64\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <text x=\"76\" y=\"176\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"17\" text-anchor=\"middle\" fill=\"#111\">ABAJO LA</text> <text x=\"76\" y=\"199\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"16\" text-anchor=\"middle\" fill=\"#111\">HETERONORMA</text></g> <path d=\"M194 212 L146 224\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M194 212 L146 224\" fill=\"none\" stroke=\"#6B7B3A\" stroke-width=\"9\" stroke-linecap=\"round\"/><circle cx=\"142\" cy=\"226\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M274 212 L296 252\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M274 212 L296 252\" fill=\"none\" stroke=\"#6B7B3A\" stroke-width=\"9\" stroke-linecap=\"round\"/><circle cx=\"298\" cy=\"256\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"150\" cy=\"90\" r=\"1.8\" fill=\"#111\"/><circle cx=\"160\" cy=\"70\" r=\"1.8\" fill=\"#111\"/><circle cx=\"172\" cy=\"56\" r=\"1.8\" fill=\"#111\"/><circle cx=\"184\" cy=\"46\" r=\"1.8\" fill=\"#111\"/><circle cx=\"198\" cy=\"40\" r=\"1.8\" fill=\"#111\"/><circle cx=\"212\" cy=\"36\" r=\"1.8\" fill=\"#111\"/><circle cx=\"158\" cy=\"104\" r=\"1.8\" fill=\"#111\"/><circle cx=\"146\" cy=\"118\" r=\"1.8\" fill=\"#111\"/><circle cx=\"150\" cy=\"134\" r=\"1.8\" fill=\"#111\"/><circle cx=\"168\" cy=\"84\" r=\"1.8\" fill=\"#111\"/><circle cx=\"182\" cy=\"66\" r=\"1.8\" fill=\"#111\"/><circle cx=\"196\" cy=\"56\" r=\"1.8\" fill=\"#111\"/><circle cx=\"210\" cy=\"50\" r=\"1.8\" fill=\"#111\"/><circle cx=\"222\" cy=\"44\" r=\"1.8\" fill=\"#111\"/><circle cx=\"164\" cy=\"122\" r=\"1.8\" fill=\"#111\"/><circle cx=\"176\" cy=\"100\" r=\"1.8\" fill=\"#111\"/><circle cx=\"156\" cy=\"150\" r=\"1.8\" fill=\"#111\"/><circle cx=\"170\" cy=\"160\" r=\"1.8\" fill=\"#111\"/> <path d=\"M232 31 Q318 36 335 112 Q338 156 322 188 Q306 150 304 112 Q298 70 232 62 Z\" fill=\"#FF5FA2\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M248 40 Q314 54 322 122 Q324 152 316 176\" fill=\"none\" stroke=\"#2CC7B7\" stroke-width=\"7\" stroke-linecap=\"round\"/> <path d=\"M262 58 Q306 76 312 124\" fill=\"none\" stroke=\"#FFD93B\" stroke-width=\"6\" stroke-linecap=\"round\"/> <path d=\"M240 50 Q290 58 318 100\" fill=\"none\" stroke=\"#8E5BFF\" stroke-width=\"5\" stroke-linecap=\"round\"/> <path d=\"M176 114 Q192 98 208 114 M256 114 Q272 98 288 114\" fill=\"none\" stroke=\"#111\" stroke-width=\"6\" stroke-linecap=\"round\"/> <path d=\"M186 120 Q176 148 190 174 M276 120 Q286 148 272 174\" fill=\"none\" stroke=\"#4AA8E8\" stroke-width=\"8\" stroke-linecap=\"round\"/> <path d=\"M170 86 L208 94 M294 86 L256 94\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linecap=\"round\"/> <path d=\"M208 166 Q220 152 232 166 Q244 152 256 166 Q246 190 232 184 Q218 190 208 166 Z\" fill=\"#F58AA0\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "ag": "La vanguardia progresista. Lucha contra el heteropatriarcado, exige renombrar la provincia con la «e» inclusiva y repudia los roles de género tradicionales.", "vocab": "Heteropatriarcado", "quote": "«Me oprime hasta el aire que respiro, amigues.»", "slogan": ["ME OPRIME", "EL AIRE"], "id": "marcos"}, {"name": "Edu", "role": "El Célibe", "acc": "#7A5F00", "bg": "#FBF3D0", "mid": "#E6C44E", "svg": "<path d=\"M268 254 Q338 246 346 196 Q354 156 320 148\" fill=\"none\" stroke=\"#111\" stroke-width=\"8\" stroke-linecap=\"round\"/> <path d=\"M320 148 L308 138 M320 148 L304 150 M320 148 L310 162\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linecap=\"round\"/> <path d=\"M212 264 L210 306 M252 264 L254 306\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"203\" cy=\"311\" rx=\"16\" ry=\"7\" fill=\"#E8D9B5\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"261\" cy=\"311\" rx=\"16\" ry=\"7\" fill=\"#E8D9B5\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M188 196 Q232 188 276 196 L282 268 L182 268 Z\" fill=\"#A8A8AE\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M182 260 L282 260\" stroke=\"#7C7C84\" stroke-width=\"5\"/> <path d=\"M208 192 L232 228 L256 192 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M214 198 L232 224 L250 198\" fill=\"none\" stroke=\"#111\" stroke-width=\"6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <rect x=\"224\" y=\"220\" width=\"16\" height=\"14\" rx=\"2\" fill=\"#D9D9D9\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M232 224 L232 231\" stroke=\"#111\" stroke-width=\"2.5\"/> <path d=\"M190 212 L224 258\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M190 212 L224 258\" fill=\"none\" stroke=\"#A8A8AE\" stroke-width=\"9\" stroke-linecap=\"round\"/><path d=\"M274 212 L240 258\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M274 212 L240 258\" fill=\"none\" stroke=\"#A8A8AE\" stroke-width=\"9\" stroke-linecap=\"round\"/> <path d=\"M221 272 Q220 248 232 238 Q244 248 243 272 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M232 240 L232 270\" stroke=\"#111\" stroke-width=\"2\"/> <path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"194\" cy=\"106\" r=\"17\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"270\" cy=\"106\" r=\"17\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"194\" cy=\"98\" r=\"9\" fill=\"#111\"/><circle cx=\"270\" cy=\"98\" r=\"9\" fill=\"#111\"/> <circle cx=\"190\" cy=\"94\" r=\"3\" fill=\"#fff\"/><circle cx=\"266\" cy=\"94\" r=\"3\" fill=\"#fff\"/> <path d=\"M172 80 Q194 66 214 80 M250 80 Q270 66 292 80\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linecap=\"round\"/> <circle cx=\"168\" cy=\"140\" r=\"10\" fill=\"#FFB3C7\" opacity=\".8\"/><circle cx=\"296\" cy=\"140\" r=\"10\" fill=\"#FFB3C7\" opacity=\".8\"/> <path d=\"M214 152 Q232 168 250 152\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M232 32 L232 18\" stroke=\"#999\" stroke-width=\"6\" stroke-linecap=\"round\"/> <path d=\"M196 50 Q232 38 268 50\" fill=\"none\" stroke=\"#7A5C2E\" stroke-width=\"4\" stroke-linecap=\"round\"/> <ellipse cx=\"208\" cy=\"13\" rx=\"21\" ry=\"8\" fill=\"none\" stroke=\"#111\" stroke-width=\"13\"/><ellipse cx=\"208\" cy=\"13\" rx=\"21\" ry=\"8\" fill=\"none\" stroke=\"#FF8DB8\" stroke-width=\"7\"/> <ellipse cx=\"256\" cy=\"13\" rx=\"21\" ry=\"8\" fill=\"none\" stroke=\"#111\" stroke-width=\"13\"/><ellipse cx=\"256\" cy=\"13\" rx=\"21\" ry=\"8\" fill=\"none\" stroke=\"#FF8DB8\" stroke-width=\"7\"/> <rect x=\"226\" y=\"9\" width=\"12\" height=\"8\" rx=\"3\" fill=\"#C8C8C8\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M156 14 L159 22 L167 25 L159 28 L156 36 L153 28 L145 25 L153 22 Z M312 14 L315 22 L323 25 L315 28 L312 36 L309 28 L301 25 L309 22 Z\" fill=\"#FFD93B\" stroke=\"#111\" stroke-width=\"2\"/>", "ag": "Un ser puro, casto y temeroso de Dios. Abstinencia, moral cristiana estricta y escándalo ante cualquier insinuación de pecado o lujuria.", "vocab": "Castidad, pecado", "quote": "«Mi cuerpo es un templo. Por favor, no miréis el sótano del templo.»", "slogan": ["MI CUERPO", "ES UN TEMPLO"], "id": "edu"}, {"name": "Fermín", "role": "El Preparacionista", "acc": "#5C6B1F", "bg": "#EEF1D9", "mid": "#A9B85C", "svg": "<rect x=\"168\" y=\"150\" width=\"128\" height=\"118\" rx=\"14\" fill=\"#6E7B3A\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M300 162 L346 30\" stroke=\"#111\" stroke-width=\"3\"/><circle cx=\"346\" cy=\"28\" r=\"5\" fill=\"#D6202A\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <g transform=\"rotate(-18 140 176)\"><rect x=\"110\" y=\"166\" width=\"58\" height=\"20\" fill=\"#F2D9A8\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M110 172 L168 172\" stroke=\"#111\" stroke-width=\"2\"/> <text x=\"139\" y=\"183\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"10\" text-anchor=\"middle\" fill=\"#C0272D\">PIZZA</text></g> <path d=\"M212 264 L210 306 M252 264 L254 306\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"203\" cy=\"311\" rx=\"16\" ry=\"7\" fill=\"#6B4E2E\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"261\" cy=\"311\" rx=\"16\" ry=\"7\" fill=\"#6B4E2E\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M188 196 Q232 186 276 196 L280 264 L184 264 Z\" fill=\"#5C6B1F\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <rect x=\"194\" y=\"232\" width=\"24\" height=\"22\" fill=\"#4A5718\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"246\" y=\"232\" width=\"24\" height=\"22\" fill=\"#4A5718\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M194 238 L218 238 M246 238 L270 238\" stroke=\"#111\" stroke-width=\"2\"/> <rect x=\"194\" y=\"204\" width=\"20\" height=\"16\" fill=\"#4A5718\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"250\" y=\"204\" width=\"20\" height=\"16\" fill=\"#4A5718\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <ellipse cx=\"232\" cy=\"214\" rx=\"20\" ry=\"15\" fill=\"#3A3A3A\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"224\" cy=\"210\" r=\"5\" fill=\"#9FC3D6\" stroke=\"#111\" stroke-width=\"2\"/><circle cx=\"240\" cy=\"210\" r=\"5\" fill=\"#9FC3D6\" stroke=\"#111\" stroke-width=\"2\"/> <circle cx=\"232\" cy=\"228\" r=\"8\" fill=\"#888\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M227 228 L237 228 M232 223 L232 233\" stroke=\"#111\" stroke-width=\"1.5\"/> <path d=\"M190 210 L166 244\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M190 210 L166 244\" fill=\"none\" stroke=\"#5C6B1F\" stroke-width=\"9\" stroke-linecap=\"round\"/> <rect x=\"138\" y=\"232\" width=\"28\" height=\"32\" rx=\"3\" fill=\"#C9C9C9\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"138\" y=\"240\" width=\"28\" height=\"15\" fill=\"#D6202A\" stroke=\"#111\" stroke-width=\"2\"/> <text x=\"152\" y=\"251\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"7.5\" text-anchor=\"middle\" fill=\"#fff\">FABADA</text> <circle cx=\"168\" cy=\"248\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M274 210 L306 178\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M274 210 L306 178\" fill=\"none\" stroke=\"#5C6B1F\" stroke-width=\"9\" stroke-linecap=\"round\"/> <rect x=\"304\" y=\"128\" width=\"22\" height=\"42\" rx=\"4\" fill=\"#222\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M320 128 L324 104\" stroke=\"#111\" stroke-width=\"4\" stroke-linecap=\"round\"/> <path d=\"M309 138 L321 138 M309 144 L321 144 M309 150 L321 150\" stroke=\"#777\" stroke-width=\"2\"/><circle cx=\"315\" cy=\"160\" r=\"3\" fill=\"#E02929\"/> <circle cx=\"306\" cy=\"176\" r=\"10\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M134 86 Q232 64 330 86\" fill=\"none\" stroke=\"#111\" stroke-width=\"12\" stroke-linecap=\"round\"/><path d=\"M134 86 Q232 64 330 86\" fill=\"none\" stroke=\"#444\" stroke-width=\"6\" stroke-linecap=\"round\"/> <rect x=\"212\" y=\"58\" width=\"40\" height=\"26\" rx=\"7\" fill=\"#FFD93B\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"232\" cy=\"71\" r=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"2\"/> <path d=\"M232 50 L232 36 M216 54 L206 42 M248 54 L258 42\" stroke=\"#F2C811\" stroke-width=\"3.5\" stroke-linecap=\"round\"/> <circle cx=\"194\" cy=\"120\" r=\"21\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"270\" cy=\"120\" r=\"21\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"194\" cy=\"120\" r=\"3.5\" fill=\"#111\"/><circle cx=\"270\" cy=\"120\" r=\"3.5\" fill=\"#111\"/> <path d=\"M168 94 Q194 84 216 96 M248 96 Q270 84 296 94\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linecap=\"round\"/> <path d=\"M204 168 Q212 158 220 168 Q228 178 236 168 Q244 158 252 168 Q258 174 262 168\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M326 118 Q318 134 326 142 Q334 134 326 118 Z M138 128 Q132 140 138 146 Q144 140 138 128 Z\" fill=\"#6BB8F0\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <g fill=\"#111\"><circle cx=\"212\" cy=\"184\" r=\"1.6\"/><circle cx=\"222\" cy=\"188\" r=\"1.6\"/><circle cx=\"232\" cy=\"189\" r=\"1.6\"/><circle cx=\"242\" cy=\"188\" r=\"1.6\"/><circle cx=\"252\" cy=\"184\" r=\"1.6\"/></g>", "ag": "Lleva desde 2020 esperando el colapso y por fin ha llegado. Quiere convertir Soria en un búnker autosuficiente: torreznos racionados, la lata de fabada como moneda oficial, simulacros de apocalipsis cada domingo y un muro de sacos terreros en Aranda de Duero.", "vocab": "Colapso, búnker, autosuficiencia", "quote": "«Llevo diez años preparado para el colapso. ¿Alguien tiene un abrelatas?»", "slogan": ["¡EL COLAPSO", "ES HOY!"], "id": "fermin"}, {"name": "Luna", "role": "La Hippie Pija Modernista", "acc": "#0F7A72", "bg": "#DDF3F0", "mid": "#6FCFC4", "svg": "<rect x=\"146\" y=\"150\" width=\"34\" height=\"140\" rx=\"17\" fill=\"#7CC8B8\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\" transform=\"rotate(-26 163 220)\"/> <path d=\"M150 170 L178 156 M156 286 L184 272\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(-26 163 220)\"/> <path d=\"M190 258 L180 306 L224 306 L232 274 L240 306 L284 306 L274 258 Z\" fill=\"#E9D6B8\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M196 266 L188 304 M210 266 L206 304 M254 266 L258 304 M268 266 L276 304\" stroke=\"#C49A6C\" stroke-width=\"2.5\"/> <ellipse cx=\"200\" cy=\"311\" rx=\"17\" ry=\"6\" fill=\"#C08A50\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"264\" cy=\"311\" rx=\"17\" ry=\"6\" fill=\"#C08A50\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M134 110 Q118 200 150 238 Q172 222 168 178 Z M330 110 Q346 200 314 238 Q292 222 296 178 Z\" fill=\"#8B5A2B\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M192 196 Q232 186 272 196 L276 262 L188 262 Z\" fill=\"#0F7A72\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M190 222 L200 214 L210 222 L220 214 L230 222 L240 214 L250 222 L260 214 L274 222\" fill=\"none\" stroke=\"#F2C14E\" stroke-width=\"3.5\" stroke-linejoin=\"round\"/> <path d=\"M188 244 L198 236 L208 244 L218 236 L228 244 L238 236 L248 244 L258 236 L276 244\" fill=\"none\" stroke=\"#FFF5E6\" stroke-width=\"3\" stroke-linejoin=\"round\"/> <path d=\"M210 197 Q232 214 254 197\" fill=\"none\" stroke=\"#8B6B3A\" stroke-width=\"2.5\"/> <path d=\"M232 206 L239 215 L232 228 L225 215 Z\" fill=\"#D8B4FE\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M194 210 L152 226\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M194 210 L152 226\" fill=\"none\" stroke=\"#0F7A72\" stroke-width=\"9\" stroke-linecap=\"round\"/> <path d=\"M150 196 L156 172\" stroke=\"#111\" stroke-width=\"7\" stroke-linecap=\"round\"/><path d=\"M150 196 L156 172\" stroke=\"#C9A06A\" stroke-width=\"3.5\" stroke-linecap=\"round\"/> <path d=\"M128 198 L162 198 L157 238 L133 238 Z\" fill=\"#9CCB5B\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M126 198 L164 198\" stroke=\"#111\" stroke-width=\"4\" stroke-linecap=\"round\"/> <path d=\"M136 214 Q146 210 156 216\" fill=\"none\" stroke=\"#F8F7F2\" stroke-width=\"2.5\"/> <circle cx=\"150\" cy=\"228\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M270 210 L298 246\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M270 210 L298 246\" fill=\"none\" stroke=\"#0F7A72\" stroke-width=\"9\" stroke-linecap=\"round\"/> <g transform=\"rotate(14 330 238)\"><rect x=\"318\" y=\"226\" width=\"26\" height=\"17\" rx=\"2\" fill=\"#111\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><rect x=\"322\" y=\"230\" width=\"6\" height=\"5\" fill=\"#D9A93E\"/></g> <rect x=\"296\" y=\"232\" width=\"12\" height=\"18\" rx=\"3\" fill=\"#333\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><circle cx=\"302\" cy=\"230\" r=\"4\" fill=\"none\" stroke=\"#111\" stroke-width=\"2\"/> <path d=\"M286 252 L344 252 L350 306 L280 306 Z\" fill=\"#F3EBDD\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M298 252 Q300 234 312 252 M320 252 Q324 234 334 252\" fill=\"none\" stroke=\"#111\" stroke-width=\"3\"/> <text x=\"315\" y=\"284\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"7.4\" text-anchor=\"middle\" fill=\"#111\" textLength=\"58\" lengthAdjust=\"spacingAndGlyphs\">DECRECIMIENTO</text> <path d=\"M300 292 Q315 286 330 292\" fill=\"none\" stroke=\"#0F7A72\" stroke-width=\"2\"/> <circle cx=\"298\" cy=\"250\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M140 120 Q138 88 170 82 M324 120 Q326 88 294 82\" fill=\"none\" stroke=\"#8B5A2B\" stroke-width=\"10\" stroke-linecap=\"round\"/> <ellipse cx=\"232\" cy=\"74\" rx=\"150\" ry=\"22\" fill=\"#D9B98A\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M168 74 Q170 20 232 16 Q294 20 296 74 Z\" fill=\"#D9B98A\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M170 60 Q232 52 294 60\" fill=\"none\" stroke=\"#0F7A72\" stroke-width=\"9\"/> <path d=\"M284 58 Q314 22 332 6 Q320 36 292 62 Z\" fill=\"#F2C14E\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M290 58 Q312 30 328 12\" fill=\"none\" stroke=\"#111\" stroke-width=\"1.5\"/> <path d=\"M174 124 Q194 136 214 124 M250 124 Q270 136 290 124\" fill=\"none\" stroke=\"#111\" stroke-width=\"5\" stroke-linecap=\"round\"/> <path d=\"M178 112 Q194 104 210 110 M254 110 Q270 104 286 112\" fill=\"none\" stroke=\"#111\" stroke-width=\"3.5\" stroke-linecap=\"round\"/> <circle cx=\"170\" cy=\"150\" r=\"9\" fill=\"#FFB3C7\" opacity=\".8\"/><circle cx=\"294\" cy=\"150\" r=\"9\" fill=\"#FFB3C7\" opacity=\".8\"/> <g fill=\"#A0703F\"><circle cx=\"186\" cy=\"146\" r=\"1.6\"/><circle cx=\"194\" cy=\"150\" r=\"1.6\"/><circle cx=\"278\" cy=\"146\" r=\"1.6\"/><circle cx=\"270\" cy=\"150\" r=\"1.6\"/></g> <path d=\"M210 162 Q232 178 254 162\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <circle cx=\"142\" cy=\"160\" r=\"10\" fill=\"none\" stroke=\"#D9A93E\" stroke-width=\"3.5\"/><circle cx=\"322\" cy=\"160\" r=\"10\" fill=\"none\" stroke=\"#D9A93E\" stroke-width=\"3.5\"/>", "ag": "Influencer de bienestar holístico recién llegada de un loft de Malasaña para «conectar con lo rural». Quiere declarar Soria santuario slow: kombucha en vez de torreznos, baños de bosque a 90 euros, retiros de silencio obligatorios y alquileres que solo pueda pagar ella.", "vocab": "Energía, vibra, sostenible, amix", "quote": "«Mi coach energético dice que Soria vibra bajo. Tranquis, que yo os la gentrifico.»", "slogan": ["SORIA VIBRA", "BAJO, AMIX"], "id": "luna"}, {"name": "Aurelio", "role": "El Estoico Incel", "acc": "#4E4E5A", "bg": "#E8E8EE", "mid": "#B9B9C6", "svg": "<path d=\"M196 262 L192 306 L226 306 L232 274 L238 306 L272 306 L268 262 Z\" fill=\"#5A5A66\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M199 266 L196 304 M265 266 L268 304\" stroke=\"#fff\" stroke-width=\"3\"/> <ellipse cx=\"206\" cy=\"311\" rx=\"17\" ry=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"258\" cy=\"311\" rx=\"17\" ry=\"7\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M194 306 L218 314 M246 314 L270 306 M200 312 L212 302 M252 302 L264 312\" stroke=\"#8B5A2B\" stroke-width=\"3\" stroke-linecap=\"round\"/> <path d=\"M190 196 Q232 186 274 196 L278 264 L186 264 Z\" fill=\"#6B6B78\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M188 200 Q214 190 244 196 L282 262 L238 266 Q214 236 188 216 Z\" fill=\"#FFFFFF\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M200 208 Q226 222 248 254 M214 202 Q238 220 262 256\" fill=\"none\" stroke=\"#BBBBC4\" stroke-width=\"2\"/> <g transform=\"rotate(16 250 228)\"><rect x=\"240\" y=\"212\" width=\"22\" height=\"28\" fill=\"#FFF5F7\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M251 222 C247 216 241 221 251 230 C261 221 255 216 251 222 Z\" fill=\"#E0405A\"/> <text x=\"251\" y=\"238\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"5.5\" text-anchor=\"middle\" fill=\"#111\">14 PÁG.</text></g> <path d=\"M192 210 L158 232\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M192 210 L158 232\" fill=\"none\" stroke=\"#6B6B78\" stroke-width=\"9\" stroke-linecap=\"round\"/> <g transform=\"rotate(-8 136 238)\"><rect x=\"110\" y=\"206\" width=\"48\" height=\"62\" rx=\"3\" fill=\"#7A1E1E\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M116 206 L116 268\" stroke=\"#111\" stroke-width=\"2\"/> <text x=\"137\" y=\"232\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"8.5\" text-anchor=\"middle\" fill=\"#F2C14E\">MEDITA-</text> <text x=\"137\" y=\"243\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"8.5\" text-anchor=\"middle\" fill=\"#F2C14E\">CIONES</text></g> <circle cx=\"156\" cy=\"236\" r=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M272 210 L306 196\" fill=\"none\" stroke=\"#111\" stroke-width=\"16\" stroke-linecap=\"round\"/><path d=\"M272 210 L306 196\" fill=\"none\" stroke=\"#6B6B78\" stroke-width=\"9\" stroke-linecap=\"round\"/> <path d=\"M304 206 Q322 180 340 206\" fill=\"none\" stroke=\"#111\" stroke-width=\"8\" stroke-linecap=\"round\"/> <circle cx=\"322\" cy=\"226\" r=\"22\" fill=\"#2A2A2A\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <text x=\"322\" y=\"230\" font-family=\"Patrick Hand, sans-serif\" font-weight=\"bold\" font-size=\"9\" text-anchor=\"middle\" fill=\"#fff\">24 KG</text> <circle cx=\"310\" cy=\"194\" r=\"10\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><path d=\"M130 112 C128 60 170 30 232 30 C296 30 336 66 334 114 C333 160 296 196 232 196 C168 196 131 160 130 112 Z\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"5\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"152\" cy=\"90\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(-62 152 90)\"/><ellipse cx=\"158\" cy=\"72\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(-52 158 72)\"/><ellipse cx=\"170\" cy=\"57\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(-38 170 57)\"/><ellipse cx=\"186\" cy=\"46\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(-22 186 46)\"/><ellipse cx=\"204\" cy=\"40\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(-8 204 40)\"/><ellipse cx=\"312\" cy=\"90\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(62 312 90)\"/><ellipse cx=\"306\" cy=\"72\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(52 306 72)\"/><ellipse cx=\"294\" cy=\"57\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(38 294 57)\"/><ellipse cx=\"278\" cy=\"46\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(22 278 46)\"/><ellipse cx=\"260\" cy=\"40\" rx=\"10\" ry=\"4.6\" fill=\"#7DB33A\" stroke=\"#111\" stroke-width=\"2\" transform=\"rotate(8 260 40)\"/> <path d=\"M176 102 L212 104\" fill=\"none\" stroke=\"#111\" stroke-width=\"6\" stroke-linecap=\"round\"/> <path d=\"M252 98 Q270 82 292 92\" fill=\"none\" stroke=\"#111\" stroke-width=\"6\" stroke-linecap=\"round\"/> <ellipse cx=\"194\" cy=\"122\" rx=\"17\" ry=\"9\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/><ellipse cx=\"270\" cy=\"120\" rx=\"17\" ry=\"11\" fill=\"#fff\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M177 118 L211 118\" stroke=\"#111\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M253 114 L287 114\" stroke=\"#111\" stroke-width=\"4\" stroke-linecap=\"round\"/> <circle cx=\"200\" cy=\"124\" r=\"4\" fill=\"#111\"/><circle cx=\"276\" cy=\"122\" r=\"4\" fill=\"#111\"/> <path d=\"M208 168 L244 168 Q254 166 258 158\" fill=\"none\" stroke=\"#111\" stroke-width=\"4\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/> <path d=\"M206 186 Q232 194 258 186\" fill=\"none\" stroke=\"#111\" stroke-width=\"2.5\" stroke-linecap=\"round\"/> <path d=\"M290 134 Q283 150 290 157 Q297 150 290 134 Z\" fill=\"#6BB8F0\" stroke=\"#111\" stroke-width=\"3\" stroke-linejoin=\"round\" stroke-linecap=\"round\"/>", "ag": "Lee a Marco Aurelio en vídeos de un minuto y asegura no sentir absolutamente nada. Su Soria será la Esparta del Duero: madrugón a las 4:30 por ley, duchas frías obligatorias, abolición de San Valentín y prohibición de las emociones en horario laboral.", "vocab": "Sigma, disciplina, Marco Aurelio", "quote": "«Las emociones son de débiles. Por cierto, ¿Lucía ha visto mi story?»", "slogan": ["NO SIENTO", "NADA. NADA."], "id": "aurelio"}];
+const byId = Object.fromEntries(CH.map(c=>[c.id,c]));
+const RM = (function(){ try{ return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } })();
+
+/* ====================================================== garabatos deterministas */
+function hash(s){ let h=2166136261>>>0; for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return h; }
+function rng(seed){ let s=seed>>>0; return function(){ s=(s+0x6D2B79F5)>>>0; let t=s; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
+const f1 = n => String(Math.round(n*10)/10);
+function scribble(cx,cy,rx,ry,seed,step,rect){
+  const r=rng(seed); const rows=Math.max(2,Math.round(2*ry/step)); let d='';
+  for(let i=0;i<=rows;i++){
+    const y=cy-ry+i*(2*ry/rows);
+    const t=(y-cy)/ry;
+    const half=rect ? rx*(0.9+r()*0.12) : rx*Math.sqrt(Math.max(0.05,1-t*t))*(0.8+r()*0.32);
+    const L=cx-half+(r()-.5)*rx*.08, R=cx+half+(r()-.5)*rx*.08;
+    const from=i%2?R:L, to=i%2?L:R;
+    d+=(i?' L':'M')+f1(from)+' '+f1(y);
+    d+=' Q'+f1((from+to)/2+(r()-.5)*rx*.25)+' '+f1(y+(r()-.5)*step)+' '+f1(to)+' '+f1(y+step*.9);
+  }
+  return d;
+}
+function loopPath(cx,cy,rx,ry,seed,turns){
+  const r=rng(seed); const N=Math.round(36*turns); let d='';
+  for(let i=0;i<=N;i++){ const a=-2.3+i/36*Math.PI*2; const k=1+(r()-.5)*.05+(i/N-.5)*.12; d+=(i?' L':'M')+f1(cx+Math.cos(a)*rx*k)+' '+f1(cy+Math.sin(a)*ry*k); }
+  return d;
+}
+const star = (x,y,s,col,sw) => { const q=s*.18; return '<path d="M'+f1(x)+' '+f1(y-s)+' Q'+f1(x+q)+' '+f1(y-q)+' '+f1(x+s)+' '+f1(y)+' Q'+f1(x+q)+' '+f1(y+q)+' '+f1(x)+' '+f1(y+s)+' Q'+f1(x-q)+' '+f1(y+q)+' '+f1(x-s)+' '+f1(y)+' Q'+f1(x-q)+' '+f1(y-q)+' '+f1(x)+' '+f1(y-s)+'Z" fill="'+col+'" stroke="#161616" stroke-width="'+(sw||2)+'" stroke-linejoin="round"/>'; };
+const crown = (x,y) => '<g transform="translate('+x+' '+y+')" filter="url(#sn-wob)"><path d="M-36 16 L-32 -18 L-15 2 L0 -28 L15 2 L32 -18 L36 16 Z" fill="#D9A93E" stroke="#161616" stroke-width="3.5" stroke-linejoin="round"/>'+star(-17,6,5.5,'#F8F7F2',1.5)+star(0,4,6.5,'#F8F7F2',1.5)+star(17,6,5.5,'#F8F7F2',1.5)+'</g>';
+const svgUrl = s => 'url("data:image/svg+xml,'+encodeURIComponent(s)+'")';
+(function(){
+  const X='xmlns="http://www.w3.org/2000/svg"'; const st=ROOT.style;
+  st.setProperty('--m-scrib', svgUrl('<svg '+X+' viewBox="0 0 200 100" preserveAspectRatio="none"><path d="'+scribble(100,50,94,40,7,9,1)+'" fill="none" stroke="#000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>'));
+  st.setProperty('--m-squig', svgUrl('<svg '+X+' viewBox="0 0 40 10" preserveAspectRatio="none"><path d="M-2 6 Q5 0 10 5 T20 5 T30 5 T42 4" fill="none" stroke="#000" stroke-width="2.8" stroke-linecap="round"/></svg>'));
+  st.setProperty('--m-wave', svgUrl('<svg '+X+' viewBox="0 0 60 12" preserveAspectRatio="none"><path d="M-1 7 C10 2 20 2 30 7 S50 12 61 7" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round"/></svg>'));
+  st.setProperty('--m-wavefill', svgUrl('<svg '+X+' viewBox="0 0 60 12" preserveAspectRatio="none"><path d="M-1 7 C10 2 20 2 30 7 S50 12 61 7 V13 H-1 Z" fill="#000"/></svg>'));
+  st.setProperty('--m-star', svgUrl('<svg '+X+' viewBox="0 0 24 24">'+star(12,12,11,'#000',0).replace(' stroke="#161616" stroke-width="0"','')+'</svg>'));
+  st.setProperty('--i-check', svgUrl('<svg '+X+' viewBox="0 0 24 24"><path d="M3.5 13 C6 15 7.5 16.5 9 19 C12 12 15.5 7.5 20.5 3.5" fill="none" stroke="#161616" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'));
+  st.setProperty('--grain', svgUrl('<svg '+X+' width="220" height="220" viewBox="0 0 220 220"><filter id="n" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 .09  0 0 0 0 .09  0 0 0 0 .08  0 0 0 .55 -.12"/></filter><rect width="220" height="220" filter="url(#n)" opacity=".5"/></svg>'));
+})();
+const FILTERS =
+ '<filter id="sn-wob" x="-8%" y="-8%" width="116%" height="116%"><feTurbulence type="turbulence" baseFrequency=".03" numOctaves="2" seed="4" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>'+
+ '<filter id="sn-boil" x="-8%" y="-8%" width="116%" height="116%"><feTurbulence type="turbulence" baseFrequency=".03" numOctaves="2" seed="4" result="t">'+(RM?'':'<animate attributeName="seed" values="4;9;15" dur=".45s" calcMode="discrete" repeatCount="indefinite"/>')+'</feTurbulence><feDisplacementMap in="SourceGraphic" in2="t" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter>'+
+ '<filter id="sn-crayon" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="8" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.7 1.55" result="a"/><feComposite in="SourceGraphic" in2="a" operator="in"/></filter>';
+document.getElementById('sn-defs').innerHTML = FILTERS + CH.map(c=>'<g id="sn-ch-'+c.id+'">'+c.svg+'</g>').join('');
+
+/* ====================================================== utilidades */
+const $ = s => ROOT.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const d6 = () => 1 + Math.floor(Math.random()*6);
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const clampPos = n => Math.max(1, Math.min(49, n));
+const plural = (n,s,p) => n+' '+(n===1?s:p);
+const head = (id,cls) => '<svg class="hd '+(cls||'')+'" style="--bg-c:'+byId[id].bg+'" viewBox="118 0 232 206" aria-hidden="true"><use href="#sn-ch-'+id+'"/></svg>';
+const tokSvg = id => '<svg viewBox="118 0 232 206" aria-hidden="true"><use href="#sn-ch-'+id+'"/></svg>';
+function poster(id,o){
+  o=o||{}; const c=byId[id]; const sd=hash('P'+id+(o.k||'')); const r=rng(sd);
+  const lines=o.lines||c.slogan;
+  let h='<svg class="pst" viewBox="0 0 300 400" role="img" aria-label="'+esc(o.alt||(c.name+', '+c.role))+'">';
+  h+='<g filter="url(#sn-crayon)"><path d="'+scribble(150,264,134,110,sd,12)+'" fill="none" stroke="'+c.mid+'" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>'+
+     '<path d="'+scribble(150,264,122,100,sd+9,16)+'" transform="rotate(-16 150 264)" fill="none" stroke="'+c.acc+'" stroke-width="5" stroke-linecap="round" opacity=".5"/></g>';
+  h+='<g transform="translate(14 152) scale(.59)"><use href="#sn-ch-'+id+'" filter="url(#'+(o.boil?'sn-boil':'sn-wob')+')"/></g>';
+  if(o.crown) h+=crown(151,154);
+  lines.forEach((t,i)=>{ const fs=Math.min(50,268/(Math.max(4,t.length)*0.6)); const y=60+i*54; const rot=(i%2?3:-4)+(r()-.5)*2;
+    h+='<text class="let" x="150" y="'+y+'" text-anchor="middle" font-size="'+f1(fs)+'" transform="rotate('+f1(rot)+' 150 '+y+')" filter="url(#sn-wob)">'+esc(t)+'</text>'; });
+  h+=star(28+r()*20,138+r()*14,9,'#D9A93E')+star(256+r()*16,132+r()*16,7,'#D9A93E');
+  if(o.mini) h+='<g transform="translate(228 318) scale(.15)"><use href="#sn-ch-'+o.mini+'"/></g>';
+  h+='<text class="sig" x="14" y="389">SORIA NACIÓN.</text>';
+  return h+'</svg>';
+}
+function artL(id){
+  const c=byId[id]; const sd=hash('L'+id); const r=rng(sd);
+  return '<svg viewBox="0 0 460 330" role="img" aria-label="'+esc(c.name+', '+c.role)+'"><g filter="url(#sn-crayon)"><path d="'+scribble(232,188,198,126,sd,14)+'" fill="none" stroke="'+c.mid+'" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>'+
+    '<path d="'+scribble(232,188,182,116,sd+5,18)+'" transform="rotate(-14 232 188)" fill="none" stroke="'+c.acc+'" stroke-width="6" stroke-linecap="round" opacity=".45"/></g>'+
+    '<use href="#sn-ch-'+id+'" filter="url(#sn-wob)"/>'+star(40+r()*30,40+r()*20,11,'#D9A93E')+star(410+r()*20,46+r()*20,9,'#D9A93E')+'</svg>';
+}
+const RMARK='<svg class="rmark" viewBox="0 0 60 60" aria-hidden="true"><path d="M30 3 L34.5 23 L55 14 L39 29.5 L57 42 L35 36.5 L31 57 L25.5 37 L5 45 L21 30 L4 16 L25 23.5 Z" fill="#EF4B45" stroke="#161616" stroke-width="2.6" stroke-linejoin="round" filter="url(#sn-wob)"/></svg>';
+const IC_NEXT = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 13 C8.5 11.8 13.5 12.6 19.5 12 M13.5 6 C15.8 8.2 17.6 10 19.8 12.1 C17.8 14 16 15.6 13.2 18"/></svg>';
+const IC_DIE = '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5 C4 3.8 5 3.2 7 3.3 L17.5 3 C19.8 3.1 21 4 20.8 6 L21 17.8 C21 20 20 20.9 17.6 20.8 L6.3 21 C4.2 20.9 3.2 20 3.3 17.9 Z"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="12.3" cy="12" r="1.5" fill="currentColor"/><circle cx="16.2" cy="16" r="1.5" fill="currentColor"/></svg>';
+const pips = v => { const pat={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]}[v]||[]; let h=''; for(let i=0;i<9;i++) h+='<i class="'+(pat.indexOf(i)>=0?'on':'')+'"></i>'; return h; };
+const dieSm = v => '<div class="die sm" role="img" aria-label="Dado: '+v+'">'+pips(v)+'</div>';
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.setAttribute('role','status'); t.textContent=msg;
+  ROOT.appendChild(t); setTimeout(()=>t.remove(),2800);
+}
+
+/* ====================================================== casillas */
+const PEN = {drink:4, lbl:'un vaso de penalti'};
+const HID = {drink:3, lbl:'un hidalgo'};
+const ok = (l,e) => ({l:l||'Hecho', e:e||[]});
+
+const SQ = [
+{n:1,s:'Salida',t:'Plaza Mayor de Soria',k:'start',
+ x:'Arranca la campaña para independizar Soria de Valladolid y Extremadura. Trago general de hermandad: brindad todos.',
+ b:[ok('Brindis hecho',[{drink:1,who:'all'}])]},
+{n:2,s:'Relaxing Cup',t:'El «Relaxing Cup» en El Collado',
+ x:'Llega la prensa internacional. Hablas con acento guiri impostado hasta tu próximo turno. Si se te escapa una sola palabra con acento normal, bebes 2 tragos.',
+ b:[ok('Activar acento guiri',[{note:'{self} habla con acento guiri. Si se le escapa una palabra normal, bebe 2'}])]},
+{n:3,s:'Aduana',t:'Aduana Vallisoletana de Aranda de Duero',
+ x:'Buscan secesionistas. Tira el dado: si sale par, sobornas con torreznos y avanzas 2. Si sale impar, te requisan el coche: pierdes un turno y bebes 2.',
+ roll:{even:[{mv:2}],odd:[{skip:1},{drink:2}],evenT:'Par: sobornas con torreznos',oddT:'Impar: te requisan el coche'}},
+{n:4,s:'Ley Anti-Caza',t:'La Ley Animalista Anti-Caza',k:'trap',who:['patch'],
+ mine:'Da un discurso emocionado defendiendo los derechos de los jabalíes y exigiendo fundir las escopetas. Si se te nota el odio a los animalistas o defiendes el campo tradicional, vaso de penalti.',
+ pen:[PEN],
+ other:'Brindáis por la Agenda 2030 y mandáis 2 tragos a Don Patch.',
+ otherB:[ok('Brindis hecho',[{drink:2,who:'char:patch'}])]},
+{n:5,s:'Manda huevos',t:'«Manda huevos» (micro abierto)',
+ x:'Te pillan rajando del presupuesto soriano. Repartes 3 tragos al jugador que peor te caiga y avanzas 1.',
+ b:[{l:'Repartir 3 tragos',pick:[{drink:3}],px:1,pickT:'¿Quién se lleva los 3 tragos?',e:[{mv:1}]}]},
+{n:6,s:'Registro del maletín',t:'El Registro del Maletín',k:'trap',who:['edu'],
+ mine:'La policía abre tu equipaje y saca un arnés de cuero y unas fustas. Finge pánico, santíguate y jura que es un soporte lumbar ortopédico. Si admites saber usarlo o te da la risa, 4 tragos por pervertido.',
+ pen:[{drink:4,lbl:'4 tragos por pervertido'}],
+ other:'Pedís consejo técnico a Edu. Si se niega a responder, bebe 2.',
+ otherB:[ok('Edu respondió'),ok('Edu se negó a responder',[{drink:2,who:'char:edu'}])]},
+{n:7,s:'El Falcon',t:'El Falcon a las Fiestas de San Juan',
+ x:'Robas el helicóptero de la Junta. Avanzas volando a la casilla 11, pero repartes 4 tragos entre los que van por detrás, por corrupto.',
+ b:[ok('Despegar hacia la 11',[{go:11}])]},
+{n:8,s:'Micromachismos',t:'El Taller de Micromachismos',k:'trap',who:['ivan'],
+ mine:'Tienes 30 segundos para sermonear a quien tengas a tu derecha, usando la «e» de compañere, por su postura opresora al sentarse. Si sueltas una risita o un «bro», 4 tragos.',
+ pen:[{drink:4}],
+ other:'Bostezáis y mandáis 2 tragos a Ivan.',
+ otherB:[ok('Bostezo colectivo',[{drink:2,who:'char:ivan'}])]},
+{n:9,s:'Adoquín',t:'El Adoquín de Numancia',
+ x:'Coge cualquier objeto de la mesa y convence al grupo de que Valladolid lo usará como arma letal contra Soria. Quien se ría bebe 2; si nadie se ríe, retrocedes 2 por cuñado.',
+ b:[{l:'Alguien se rió',pick:[{drink:2}],pickT:'¿Quién se rió?',e:[]},ok('Nadie se rió',[{mv:-2}])]},
+{n:10,s:'Cárcel',t:'Cárcel: El Calabozo Vallisoletano',k:'jail',
+ x:'Quedas preso. Para salir, en tus turnos tendrás que sacar dobles en los dados o beberte el vaso de penalti de un trago.',
+ b:[ok('Entrar al calabozo',[{jail:1}])]},
+{n:11,s:'Casino Amistad',t:'La Gala del Casino Amistad',k:'trap',who:['elisa'],
+ mine:'Pon la «papa en la boca», alza el meñique y propón privatizar el monte Valonsadero soltando tres «o sea, súper fuerte». Si te sale la vena de barrio, retrocedes 2 y bebes 3.',
+ pen:[{mv:-2},{drink:3}],
+ other:'Elisa os mira con asco clasista y os manda 1 trago a cada uno.',
+ otherB:[ok('Beber el trago',[{drink:1,who:'exceptChar:elisa'}])]},
+{n:12,s:'Golondrinas',t:'Las Putas Golondrinas',
+ x:'«¿Quién propuso matar a las golondrinas?». Haz reír a quien tengas a tu izquierda en 10 segundos. Si lo consigues te salvas; si no, hidalgo.',
+ b:[ok('Lo consiguió'),ok('No lo consiguió',[HID])]},
+{n:13,s:'¿Por qué no te callas?',t:'«¿Por qué no te callas?»',
+ x:'Tienes el poder de enmudecer a un jugador. Si abre la boca antes de tu siguiente turno, se bebe un hidalgo.',
+ b:[{l:'Elegir a quién enmudecer',pick:[],px:1,pickT:'¿A quién enmudeces?',e:[{note:'{picked} está enmudecido por {self}. Si habla, hidalgo'}]}]},
+{n:14,s:'Embargo del jamón',t:'El Embargo Extremeño del Jamón',
+ x:'Duelo: retas a otro jugador a nombrar productos del cerdo o de Soria por turnos. Quien tarde más de 3 segundos o repita, bebe 3 y retrocede 1.',
+ b:[{l:'Alguien perdió el duelo',pick:[{drink:3},{mv:-1}],pickT:'¿Quién perdió el duelo?',e:[]}]},
+{n:15,s:'Privatización',t:'La Privatización Algorítmica',k:'trap',who:['pablo'],
+ mine:'Haz un pitch caminando por la sala para sustituir a los médicos de Soria por una inteligencia artificial de pago. Si muestras empatía, defiendes lo público o insultas a los Cayetanos, vaso de penalti.',
+ pen:[PEN],
+ other:'Invertís en su startup. Mandáis 2 tragos a Pablo por vendehúmos.',
+ otherB:[ok('Invertir en la startup',[{drink:2,who:'char:pablo'}])]},
+{n:16,s:'Simulacro nuclear',t:'El Simulacro Nuclear de Golmayo',k:'trap',who:['fermin'],
+ mine:'Suena la alarma antiaérea. Tienes 30 segundos para convertir la mesa en un búnker con lo que haya encima y explicar a gritos el protocolo: quién vigila, quién raciona las latas y a quién os coméis primero si se acaban. Si dudas, te ríes o admites que no tienes ni idea, 4 tragos.',
+ pen:[{drink:4}],
+ other:'Fermín os cobra la entrada al búnker: 1 trago por cabeza, menos él.',
+ otherB:[ok('Pagar la entrada',[{drink:1,who:'exceptChar:fermin'}])]},
+{n:17,s:'Ecce Homo',t:'El Ecce Homo de San Saturio',
+ x:'Has destrozado el retablo del patrón al restaurarlo. Pierdes el próximo turno por la polémica.',
+ b:[ok('Asumir la polémica',[{skip:1}])]},
+{n:18,s:'Guardia Foral',t:'El Desfile de la Guardia Foral',k:'trap',who:['marcos'],
+ mine:'Exige histéricamente que los soldados desfilen en drag y con purpurina porque hay exceso de testosterona. Si te cuadras o sonríes al ver la bandera, bebes 3 y retrocedes 2.',
+ pen:[{drink:3},{mv:-2}],
+ other:'Saludo militar firme. Avanzas 1 casilla.',
+ otherB:[ok('Saludo militar',[{mv:1}])]},
+{n:19,s:'Vídeo Pedro J',t:'El Vídeo con Pedro J',
+ x:'Filtración comprometedora en los márgenes del Duero. Bebes 3 tragos para olvidar y retrocedes 2.',
+ b:[ok('Beber y olvidar',[{drink:3},{mv:-2}])]},
+{n:20,s:'Manifestación',t:'La Manifestación Ultranacionalista',k:'trap',who:['leo'],
+ mine:'¡Arriba Soria! Lideras una marcha ultra. Ponte en pie y da un mitin exigiendo la pureza soriana absoluta. Reto: mientras hablas, quien tengas a tu izquierda te hará fotos con la peor cara posible. Si paras para posar, pides repetir la foto o te quejas de tu perfil bueno, 4 tragos.',
+ pen:[{drink:4}],
+ other:'Te apartas de la manifestación por miedo. Retrocedes 1 casilla.',
+ otherB:[ok('Salir corriendo',[{mv:-1}])]},
+{n:21,s:'AVE Fantasma',t:'El AVE Fantasma a Plasencia',
+ x:'Inauguración exprés de la línea que sortea Valladolid. Avanzas a la casilla 30 gritando «¡Viva Soria libre!».',
+ b:[ok('¡Viva Soria libre!',[{go:30}])]},
+{n:22,s:'M. Candidato',t:'¿Quién es M. Candidato?',
+ x:'Caja B. Inventa un mote con la inicial de otro jugador y retadle a piedra, papel o tijera. Quien pierda retrocede 3 y bebe 3.',
+ b:[{l:'Ganó el retador',pick:[{mv:-3},{drink:3}],px:1,pickT:'¿Quién es el retado que perdió?',e:[]},ok('Perdió el retador',[{mv:-3},{drink:3}])]},
+{n:23,s:'Debate: pureza vs transhumanismo',t:'El Debate: Pureza vs Transhumanismo',k:'duel',who:['edu','pablo'],verb:'Se rió',
+ mine:'Edu defiende que la pureza virginal es sagrada. Pablo defiende que los humanos dan asco y que el futuro es el Metaverso con gafas VR. El primero que se ría de lo que está diciendo va directo a la CÁRCEL y bebe 4.',
+ bad:[{jail:1},{drink:4}],
+ other:'Hacéis de inversores y mandáis 3 tragos al perdedor.',
+ otherB:[{l:'Repartir los 3 tragos',pick:[{drink:3}],pickT:'¿Quién es el perdedor?',e:[]}]},
+{n:24,s:'Ceremonia del cacao',t:'La Ceremonia del Cacao en la Laguna Negra',k:'trap',who:['luna'],
+ mine:'Guía a la mesa en una meditación de un minuto con voz susurrante: que todos cierren los ojos, respiren y den las gracias a la Pachamama soriana. Al terminar, cobra 90 euros por cabeza. Si se te escapa la risa, un taco o un acento que no sea de Malasaña, 4 tragos.',
+ pen:[{drink:4}],
+ other:'Te cobran 90 euros por un baño de bosque. Bebes 1 por la estafa.',
+ otherB:[ok('Pagar el baño de bosque',[{drink:1}])]},
+{n:25,s:'Botón del Error',t:'El Botón del Error',
+ x:'Cedes el pinar de Urbión a Valladolid por equivocarte al votar. Quien tengas a tu derecha decide cuántas casillas retrocedes.',
+ b:[ok('Retroceder 1',[{mv:-1}]),ok('Retroceder 2',[{mv:-2}]),ok('Retroceder 3',[{mv:-3}])]},
+{n:26,s:'Tamayazo',t:'El Tamayazo en Soria',
+ x:'Transfuguismo. Intercambias tu ficha con el jugador que vaya inmediatamente delante de ti. Bebes 2 tragos por rata.',
+ b:[ok('Cambiar de ficha',[{swap:1},{drink:2}])]},
+{n:27,s:'Sindicalismo vs élite',t:'Sindicalismo vs Élite Financiera',k:'duel',who:['patch','elisa'],verb:'Rompió el personaje',
+ mine:'Discusión a muerte de 45 segundos. Don Patch exige quemar los bancos. Elisa exige que los pobres trabajen 14 horas. Si alguno rompe el personaje, hidalgo y retrocede 2.',
+ bad:[HID,{mv:-2}],
+ other:'Sois el público de La Sexta Noche: mandáis 2 tragos al peor actor.',
+ otherB:[{l:'Repartir los 2 tragos',pick:[{drink:2}],pickT:'¿Quién es el peor actor?',e:[]}]},
+{n:28,s:'Ducha fría de las 4:30',t:'La Ducha Fría de las 4:30',k:'trap',who:['aurelio'],
+ mine:'Explica a la mesa tu rutina de alto rendimiento: madrugón a las 4:30, ducha helada y cero emociones. Mientras hablas, quien tengas a tu izquierda te contará el final de película más triste que conozca. Si se te humedecen los ojos, suspiras o dices «qué bonito», 4 tragos.',
+ pen:[{drink:4}],
+ other:'Aurelio te suelta una charla de disciplina. Bebes 1 para soportarla.',
+ otherB:[ok('Aguantar la charla',[{drink:1}])]},
+{n:29,s:'El Caloret',t:'¡El Caloret Soriano!',
+ x:'Discurso de fiestas en dialecto incomprensible. Si la mesa vota que dio vergüenza, retrocedes 2 y bebes 3. Si arranca carcajadas, avanzas 3.',
+ b:[ok('Dio vergüenza',[{mv:-2},{drink:3}]),ok('Arrancó carcajadas',[{mv:3}])]},
+{n:30,s:'Estación del AVE',t:'Estación del AVE',
+ x:'Llegada del tramo 21. Vuelves a tirar el dado.',
+ b:[ok('Tirar otra vez',[{again:1}])]},
+{n:31,s:'Barbacoa',t:'La Barbacoa Heteropatriarcal',k:'duel',who:['ivan','marcos'],verb:'Se le escapó',
+ mine:'Estampa de tíos haciendo chorizo. Escandalizaos a dúo por la masculinidad tóxica de la parrilla. El primero que suelte un «bro» o hable normal de fútbol bebe 3 y retrocede 1.',
+ bad:[{drink:3},{mv:-1}],
+ other:'Picas chorizo imaginario y avanzas 1.',
+ otherB:[ok('Chorizo imaginario',[{mv:1}])]},
+{n:32,s:'Satisfyer',t:'El Satisfyer de Rita Maestre',
+ x:'Grita la palabra más cochina que se te ocurra. El primero de la mesa que se ría bebe 2 tragos.',
+ b:[{l:'Alguien se rió',pick:[{drink:2}],pickT:'¿Quién se rió primero?',e:[]},ok('Nadie se rió')]},
+{n:33,s:'La Fuga',t:'La Fuga de San Saturio',
+ x:'Tiras la moto de un municipal. Tira el dado: si sale par, escapas y avanzas 1. Si sale impar, te cazan y vas directo a la CÁRCEL.',
+ roll:{even:[{mv:1}],odd:[{jail:1}],evenT:'Par: escapas',oddT:'Impar: te cazan'}},
+{n:34,s:'Carlismo',t:'Homenaje al Carlismo Tradicional',k:'trap',who:['patch'],
+ mine:'Los carlistas sacan las boinas y celebran la monarquía tradicional. Tienes que gritar asqueado que eso es fascismo feudal. Si sonríes, te gusta el acto o dices «¡Dios, Patria y Rey!», vaso de penalti entero.',
+ pen:[PEN],
+ other:'Brindáis con pacharán. Don Patch bebe 2.',
+ otherB:[ok('Brindis con pacharán',[{drink:2,who:'char:patch'}])]},
+{n:35,s:'Cremas',t:'Las Cremas de Cifuentes',
+ x:'Hurtando cosméticos en Camaretas. Vas directo a la CÁRCEL.',
+ b:[ok('A la cárcel',[{jail:1}])]},
+{n:36,s:'Tinder soriano',t:'Tinder Soriano',k:'trap',who:['edu'],
+ mine:'La app echa fuego. Quien tengas a tu izquierda te leerá la proposición más sucia posible. Contesta únicamente: «Mi cuerpo es un templo del Señor». Si te sale una sonrisa picarona o le sigues el rollo, 4 tragos.',
+ pen:[{drink:4}],
+ other:'Pillas cacho: avanzas 1 casilla.',
+ otherB:[ok('Match',[{mv:1}])]},
+{n:37,s:'Apagón',t:'El Gran Apagón de Soria',k:'trap',who:['fermin'],
+ mine:'Se va la luz en toda la provincia y por fin llega tu momento. Ponte la linterna del móvil en la frente y reparte 5 tragos de racionamiento a la mesa, explicando con total seriedad por qué cada uno merece sobrevivir menos que tú. Si te ríes o te pillan mirando una app de comida a domicilio, vaso de penalti.',
+ pen:[PEN],
+ other:'Saqueas la despensa de Fermín. Fermín bebe 2 del disgusto.',
+ otherB:[ok('Saquear la despensa',[{drink:2,who:'char:fermin'}])]},
+{n:38,s:'Vigilancia masiva',t:'El Contrato de Vigilancia Masiva',k:'trap',who:['pablo'],
+ mine:'Te ofrecen mil millones por poner cámaras en cada casa de Soria. Acepta el trato frotándote las manos y explica por qué la privacidad es de perdedores. Si te entra la moralidad o criticas a la élite, te bebes el cáliz entero.',
+ pen:[{drink:4,lbl:'el cáliz entero'}],
+ other:'Borráis vuestro historial de internet por miedo y bebes 1.',
+ otherB:[ok('Borrar el historial',[{drink:1}])]},
+{n:39,s:'Chikilicuatre',t:'Chikilicuatre',
+ x:'Baila el crusaíto y el robocop. El último de la mesa en hacerlo bebe 2.',
+ b:[{l:'Ya hay último',pick:[{drink:2}],pickT:'¿Quién fue el último en bailar?',e:[]}]},
+{n:40,s:'Manifestación 8M',t:'La Manifestación Radical del 8M',k:'trap',who:['ivan'],
+ mine:'Llora por tus privilegios masculinos. Si durante la partida te vuelves a sentar espatarrado en la silla, hidalgo inmediato.',
+ pen:[HID],mineOk:[{note:'Ivan vigilado: si se sienta espatarrado, hidalgo. Dura toda la partida'}],
+ other:'Avanzas 1 casilla mientras Ivan se deconstruye.',
+ otherB:[ok('Avanzar',[{mv:1}])]},
+{n:41,s:'Mercado ecológico',t:'El Mercado Ecológico de la Plaza Mayor',k:'trap',who:['luna'],
+ mine:'Vende a la mesa una servilleta usada como «paño artesanal de lino soriano, de proximidad». Precio de salida: 300 euros, y tienes 30 segundos. Si te ríes o bajas de 300 euros, vaso de penalti.',
+ pen:[PEN],
+ other:'Luna ha gentrificado tu barrio y te sube el alquiler. Retrocedes 1 casilla.',
+ otherB:[ok('Mudarse más lejos',[{mv:-1}])]},
+{n:42,s:'IBEX en ICADE',t:'Reunión con el IBEX en ICADE',k:'trap',who:['elisa'],
+ mine:'Exige que los jornaleros del torrezno tributen al 70% y las grandes empresas al 0%. Si se te escapa una sola defensa de la clase trabajadora, retrocedes 3 casillas y bebes 3.',
+ pen:[{mv:-3},{drink:3}],
+ other:'Apoyáis la huelga contra Elisa, que bebe 2.',
+ otherB:[ok('Huelga general',[{drink:2,who:'char:elisa'}])]},
+{n:43,s:'Si me queréis, irse',t:'«Si me queréis, irse»',
+ x:'Empuja 2 casillas hacia atrás a cualquier jugador que comparta tu casilla o esté cerca de tu espacio.',
+ b:[{l:'Empujar a alguien',pick:[{mv:-2}],px:1,pickT:'¿A quién empujas?',e:[]},ok('No hay nadie cerca')]},
+{n:44,s:'Lenguaje inclusivo',t:'El Lenguaje Inclusivo Obligatorio',k:'trap',who:['marcos'],
+ mine:'Celebra llorando de emoción que Soria cambie su nombre a «Sorie». Si pones cara de cuñado o dices «esto es una gilipollez», vaso de penalti al canto.',
+ pen:[PEN],
+ other:'Bebéis 1 trago por la distopía.',
+ otherB:[ok('Beber por la distopía',[{drink:1,who:'all'}])]},
+{n:45,s:'Cita a ciegas',t:'La Cita a Ciegas en la Dehesa',k:'trap',who:['aurelio'],
+ mine:'Quien tengas a tu derecha te ha invitado a una cita y te pregunta qué sientes. Contesta solo con frases de Marco Aurelio, o con lo que tú creas que dijo. Si sonríes, te pones rojo o se te escapa un «yo también», vaso de penalti.',
+ pen:[PEN],
+ other:'Dejáis a Aurelio en visto. Bebe 2 de la tristeza que no siente.',
+ otherB:[ok('Dejarle en visto',[{drink:2,who:'char:aurelio'}])]},
+{n:46,s:'Gran Debate',t:'El Gran Debate Electoral',vocab:true,
+ x:'Todos contra todos: 10 segundos para insultar a quien tengas a tu izquierda usando el vocabulario de tu personaje. Quien use su vocabulario real, titubee o se ría, bebe 3 tragos.',
+ b:[{l:'Alguien rompió el personaje',pick:[{drink:3},{fraud:1}],pickT:'¿Quién titubeó o se rió?',e:[]},ok('Nadie rompió')]},
+{n:47,s:'Cacería callejera',t:'La Cacería Callejera de las Brigadas',k:'trap',who:['leo'],
+ mine:'Exige mano dura en las calles, coge una botella vacía y golpea la mesa gritando consignas ultras con cara de psicópata. Si en pleno frenesí te miras de reojo en el móvil para ver si estás guapo o muestras asco por si te manchas la ropa, 4 tragos.',
+ pen:[{drink:4}],
+ other:'Os escondéis bajo la mesa para que no os peguen. El último en esconderse bebe 2.',
+ otherB:[{l:'Ya hay último',pick:[{drink:2}],pickT:'¿Quién fue el último?',e:[]}]},
+{n:48,s:'Polígrafo',t:'El Polígrafo de la Junta',
+ x:'Confiesa una anécdota tuya REAL que destroce a tu personaje. Si la mesa la da por buena, avanzas 2. Si es aburrida, bebes 3.',
+ b:[ok('La mesa la da por buena',[{mv:2}]),ok('Aburrida',[{drink:3}])]},
+{n:49,s:'Referéndum',t:'El Referéndum «Soria Lliure»',k:'ref',
+ x:'¡El órdago a Valladolid y Extremadura! Toda la mesa vota a la de tres con el pulgar arriba para el Sí o abajo para el No.',
+ b:[{l:'Mayoría de SÍ',c:'gold',e:[{win:1}]},{l:'Mayoría de NO',c:'fraud',e:[{mv:-4},{drink:4}],t2:'Valladolid aplica el 155 militar. Retrocedes 4 casillas, bebes 4 tragos y la agonía sigue.'}]},
+{n:50,s:'Coronación',t:'La Coronación de la República Soriana',k:'end',
+ x:'¡Victoria total! Eres el nuevo dictador supremo de Soria. Valladolid capitula.',b:[]}
+];
+
+const INTRO = [
+ {k:'Año 2035', art:['leo',['¡ESPAÑA','PETÓ!']], p:['Tras una década de políticos espantosos, crisis y caos absoluto, España ha saltado por los aires.','Cataluña, Madrid, el País Vasco, Andalucía y otras tantas comunidades se han independizado y han cerrado sus fronteras.']},
+ {k:'Lo que queda', art:['elisa',['¿VALLADOLID?','O SEA…']], p:['El Estado Español ha quedado reducido a un triste y bizarro triunvirato de tres territorios.'], chips:true, p2:['Valladolid actúa ahora como la <b>capital opresora</b> del Estado.']},
+ {k:'Hoy se vota en Soria', art:['patch',['¡HOY SE','VOTA!']], p:['Arrancan las elecciones a la alcaldía. Esto no va de arreglar aceras ni de poner más luces en Navidad.','Es un secreto a voces: <b>quien gane esta noche declarará la independencia unilateral de Soria.</b>']},
+ {k:'Si Soria cae…', art:['edu',['SEÑOR,','AYÚDANOS']], p:['España se quedará solo con Valladolid y Extremadura.','El futuro de la Península Ibérica se decide esta noche, en esta mesa y con los candidatos más radicales posibles.']},
+ {k:'La regla de oro', art:['marcos',['NO ROMPAS','EL PAPEL']], p:['Durante toda la partida actúas como tu personaje político, traicionando a tu <b>Yo Real</b>.','Si titubeas, te da la risa floja o reaccionas como tú mismo, cometes <b>FRAUDE ELECTORAL</b>: humillación pública y castigo máximo.']}
+];
+
+/* ====================================================== estado */
+const SAVE='soria-nacion-v2';
+let S = {screen:'title',scene:'overview',slide:0,players:[],cur:0,notes:[],log:[],modal:null,over:null,lock:false,
+         card:null,result:null,pick:null,dice:null,moveMsg:'',turnKey:0,introReturn:false,
+         setup:{sel:{patch:1,ivan:1,elisa:1,leo:1},names:{},order:true},hasSave:false};
+function save(){ try{ localStorage.setItem(SAVE, JSON.stringify({players:S.players,cur:S.cur,notes:S.notes,log:S.log.slice(0,12),over:S.over})); }catch(e){} }
+function load(){ try{ const j=JSON.parse(localStorage.getItem(SAVE)||'null'); if(j&&j.players&&j.players.length>1&&!j.over){ S.hasSave=true; return j; } }catch(e){} S.hasSave=false; return null; }
+function wipe(){ try{ localStorage.removeItem(SAVE); }catch(e){} S.hasSave=false; }
+const cur = () => S.players[S.cur];
+const pOfChar = c => S.players.find(p=>p.char===c);
+const pById = id => S.players.find(p=>p.id===id);
+const portrait = () => (ROOT.clientHeight||window.innerHeight) > (ROOT.clientWidth||window.innerWidth)*1.1;
+const sqAcc = sq => (sq.k==='trap'||sq.k==='duel') ? byId[sq.who[0]].acc : ({start:'#2F7A45',end:'#8A6D00',ref:'#B3201F',jail:'#3a3a3a'}[sq.k]||'#D63A34');
+
+/* ====================================================== motor de efectos */
+function targets(who, self, picked){
+  const all=S.players;
+  if(!who||who==='self') return [self];
+  if(who==='all') return all;
+  if(who==='others') return all.filter(p=>p!==self);
+  if(who==='picked') return picked?[picked]:[];
+  if(who==='leader'){ const o=all.filter(p=>p!==self); if(!o.length) return []; const m=Math.max(...o.map(p=>p.pos)); return [o.find(p=>p.pos===m)]; }
+  if(who.indexOf('char:')===0){ const p=pOfChar(who.slice(5)); return p?[p]:[]; }
+  if(who.indexOf('exceptChar:')===0){ return all.filter(p=>p.char!==who.slice(11)); }
+  if(who.indexOf('p:')===0){ const p=pById(who.slice(2)); return p?[p]:[]; }
+  return [];
+}
+const nameList = tg => tg.length===S.players.length && tg.length>2 ? 'Todos' : tg.map(p=>p.name).join(', ');
+function newCtx(){ return {lines:[],resolve:null,again:false,win:null,from:cur().pos}; }
+function applyEffects(effs, picked){
+  const self=cur(); const ctx=newCtx();
+  effs.forEach(e=>{
+    const tg=targets(e.who||'self',self,picked);
+    if(!tg.length) return;
+    const who=nameList(tg); const many=tg.length>1;
+    if(e.mv){
+      if(many) { tg.forEach(p=>{ p.pos=clampPos(p.pos+e.mv); }); ctx.lines.push(who+(e.mv>0?' avanzan ':' retroceden ')+plural(Math.abs(e.mv),'casilla','casillas')); }
+      else tg.forEach(p=>{ const np=clampPos(p.pos+e.mv); const d=np-p.pos; p.pos=np; if(p.pos!==10) p.jail=false; ctx.lines.push(p.name+(d>=0?' avanza ':' retrocede ')+plural(Math.abs(d),'casilla','casillas')+(d===0?' (no puede moverse más)':'')); });
+    }
+    if(e.go){ tg.forEach(p=>{ p.pos=clampPos(e.go); ctx.resolve=p; ctx.lines.push(p.name+' salta a la casilla '+p.pos); }); }
+    if(e.skip){ tg.forEach(p=>p.skip+=e.skip); ctx.lines.push(who+' pierde '+(e.skip===1?'el próximo turno':plural(e.skip,'turno','turnos'))); }
+    if(e.jail){ tg.forEach(p=>{ p.pos=10; p.jail=true; }); ctx.lines.push(who+' va directo a la CÁRCEL'); }
+    if(e.drink){ tg.forEach(p=>p.tragos+=e.drink); ctx.lines.push(who+(many?' beben ':' bebe ')+(e.lbl?e.lbl+' ('+plural(e.drink,'trago','tragos')+')':plural(e.drink,'trago','tragos'))); }
+    if(e.fraud){ tg.forEach(p=>p.fraudes+=1); ctx.lines.push('Fraude electoral anotado a '+who); }
+    if(e.again){ ctx.again=true; ctx.lines.push(self.name+' vuelve a tirar'); }
+    if(e.win){ ctx.win=self; ctx.lines.push(self.name+' avanza a la casilla 50. Soria le apoya'); }
+    if(e.swap){ const ahead=S.players.filter(p=>p!==self&&p.pos>self.pos).sort((a,b)=>a.pos-b.pos)[0];
+      if(ahead){ const t=self.pos; self.pos=ahead.pos; ahead.pos=t; ctx.lines.push(self.name+' intercambia su ficha con '+ahead.name); } else ctx.lines.push('No hay nadie por delante: '+self.name+' se queda donde está'); }
+    if(e.note){ const txt=e.note.replace('{self}',self.name).replace('{picked}',picked?picked.name:'?'); S.notes.push({txt:txt,owner:self.id,keep:/toda la partida/.test(txt)}); ctx.lines.push('Efecto activo: '+txt); }
+  });
+  return ctx;
+}
+function showResult(ctx, extra){
+  extra=extra||{};
+  ctx.lines.forEach(l=>S.log.unshift(l)); S.log=S.log.slice(0,12);
+  S.result={lines:ctx.lines.length?ctx.lines:['Sin consecuencias. De momento.'],ctx:ctx,dice:extra.dice||null,pre:extra.pre||null,sq:extra.sq||null};
+  S.scene='result'; S.lock=false; save(); render();
+}
+function runButton(b, picked){
+  const effs=(b.e||[]).slice();
+  if(b.pick && picked) b.pick.forEach(pe=>effs.push(Object.assign({},pe,{who:'picked'})));
+  const ctx=applyEffects(effs,picked);
+  showResult(ctx,{pre:b.t2||null,sq:S.card?S.card.sq:null});
+}
+function afterResult(){
+  const ctx=S.result.ctx; const self=cur();
+  if(ctx.win){ S.over=ctx.win.id; save(); render(); return; }
+  if(ctx.resolve){ const p=ctx.resolve; panTo(p.name+' salta a la casilla '+p.pos, ()=>openSquare(p), 1700); return; }
+  const then = ctx.again ? ()=>{ S.scene='zoom'; S.lock=false; save(); render(); } : nextTurn;
+  if(self.pos!==ctx.from){ panTo(self.jail ? self.name+' entra en el calabozo' : self.name+' queda en la casilla '+self.pos, then, 1700); return; }
+  then();
+}
+function panTo(msg, then, wait){
+  S.scene='move'; S.moveMsg=msg; S.lock=true; render();
+  setTimeout(then, wait||1500);
+}
+
+/* ====================================================== turnos */
+function nextTurn(){
+  let guard=0;
+  do{
+    S.cur=(S.cur+1)%S.players.length; const p=cur();
+    if(p.skip>0){ p.skip--; S.log.unshift(p.name+' pierde su turno'); toast(p.name+' pierde su turno'); continue; }
+    break;
+  }while(++guard<30);
+  const me=cur();
+  S.notes=S.notes.filter(n=>n.keep||n.owner!==me.id);
+  S.scene='overview'; S.lock=false; S.turnKey++; S.card=null; S.result=null; save(); render();
+}
+function startDice(n, title, then){
+  S.lock=true; S.scene='dice'; S.dice={n:n,vals:Array.from({length:n},d6),done:false,title:title,res:''}; render();
+  const delays=[70,70,75,80,85,95,105,115,130,150,170,195,225,260,300,350,410];
+  let i=0;
+  (function tick(){
+    if(i<delays.length){
+      S.dice.vals=S.dice.vals.map(v=>{ let x; do{ x=d6(); }while(x===v); return x; });
+      ROOT.querySelectorAll('.bigdie').forEach((el,k)=>{ el.innerHTML=pips(S.dice.vals[k]); el.style.transform='rotate('+(Math.random()*60-30).toFixed(1)+'deg) scale('+(0.86+Math.random()*0.22).toFixed(2)+')'; });
+      setTimeout(tick, delays[i++]); return;
+    }
+    const final=Array.from({length:n},d6); S.dice.vals=final; S.dice.done=true;
+    S.dice.res = n===1 ? '¡Sale un '+final[0]+'!' : (final[0]===final[1] ? final[0]+' y '+final[1]+': ¡dobles!' : final[0]+' y '+final[1]+': no son dobles');
+    render();
+    setTimeout(()=>then(final), 1700);
+  })();
+}
+function rollTurn(){
+  if(S.lock||S.modal||S.over||S.scene!=='zoom') return;
+  const p=cur();
+  if(p.jail){ S.scene='jail'; render(); return; }
+  startDice(1, 'Tira '+p.name, vals=>{
+    S.log.unshift(p.name+' saca un '+vals[0]);
+    moveTo(p, vals[0], ()=>openSquare(p));
+  });
+}
+function moveTo(p,steps,done){
+  const room=49-p.pos; const real=Math.min(steps,room);
+  S.scene='move'; S.lock=true;
+  S.moveMsg = real===0 ? p.name+' no puede pasar del Referéndum' : p.name+' avanza '+plural(real,'casilla','casillas')+(real<steps?' (tope: Referéndum)':'');
+  render();
+  let left=real;
+  setTimeout(function tick(){
+    if(left<=0){ setTimeout(done, 1000); return; }
+    p.pos++; left--; updateBoard(); camApply(true); setTimeout(tick, 600);
+  }, 750);
+}
+
+/* ====================================================== cartas */
+function openSquare(p){
+  const sq=SQ[p.pos-1];
+  const view=viewFor(sq,p);
+  S.card={sq:sq.n,view:view,btns:view.btns}; S.scene='card'; S.lock=false;
+  save(); render();
+}
+function viewFor(sq,p){
+  const me=p.char; const kindLabel={start:'Salida',trap:'Casilla trampa',duel:'Duelo',jail:'Cárcel',end:'Meta',ref:'Referéndum'}[sq.k]||'Casilla';
+  let text=sq.x||'', banner=null, other=false, btns=sq.b||[];
+  if(sq.k==='trap'||sq.k==='duel'){
+    const names=sq.who.map(c=>byId[c].name);
+    const present=sq.who.filter(c=>pOfChar(c));
+    const mine=sq.who.indexOf(me)>=0;
+    if(mine || !present.length){
+      if(sq.k==='duel'){
+        banner = mine ? 'DUELO: '+names.join(' y ') : 'DUELO CON SUPLANTACIÓN';
+        btns=[ok('Aguantaron los dos')]; const notes=[];
+        sq.who.forEach(c=>{
+          const pl=pOfChar(c); const nm=byId[c].name;
+          if(pl){ btns.push({l:sq.verb+': '+pl.name,c:'fraud',e:[{fraud:1,who:'p:'+pl.id}].concat(sq.bad.map(x=>Object.assign({},x,{who:'p:'+pl.id})))}); }
+          else if(!mine && c===sq.who[0]){ notes.push('A '+nm+' lo haces tú'); btns.push({l:sq.verb+': '+p.name,c:'fraud',e:[{fraud:1}].concat(sq.bad)}); }
+          else { notes.push('A '+nm+' lo hace quien tengas a tu derecha'); btns.push({l:sq.verb+': quien hizo de '+nm,c:'fraud',pick:[{fraud:1}].concat(sq.bad),pickT:'¿Quién hizo de '+nm+'?',e:[]}); }
+        });
+        text=(notes.length?'Falta algún candidato esta noche. '+notes.join('. ')+'. ':'')+sq.mine;
+      } else {
+        const owner=byId[sq.who[0]].name;
+        banner = mine ? 'ES TU TRAMPA: '+byId[me].name.toUpperCase() : 'SUPLANTACIÓN: HAZ DE '+owner.toUpperCase();
+        text = mine ? sq.mine : owner+' no se presenta esta noche, así que te toca suplantarle. '+sq.mine;
+        btns=[ok('Aguantó el personaje',mine?(sq.mineOk||[]):[]),{l:'Fraude electoral',c:'fraud',e:[{fraud:1}].concat(sq.pen)}];
+      }
+    } else {
+      other=true; banner='Trampa de '+names.join(' y ')+'. Tú no estás implicado';
+      text=sq.other; btns=sq.otherB;
+    }
+  }
+  if(sq.roll){ btns=[{l:'Tirar el dado',roll:true,c:'gold'}]; }
+  return {kindLabel:kindLabel,banner:banner,other:other,text:text,btns:btns};
+}
+function pressBtn(i){
+  if(S.lock||!S.card) return; const b=S.card.btns[i]; if(!b) return;
+  if(b.roll){
+    const sq=SQ[S.card.sq-1]; const p=cur();
+    startDice(1, p.name+' tira en la '+sq.n, vals=>{
+      const v=vals[0], even=v%2===0;
+      const ctx=applyEffects(even?sq.roll.even:sq.roll.odd,null);
+      showResult(ctx,{dice:[v],pre:'Sale un '+v+'. '+(even?sq.roll.evenT:sq.roll.oddT)+'.',sq:sq.n});
+    });
+    return;
+  }
+  if(b.pick){ S.pick={b:b,title:b.pickT||'¿Quién?'}; S.scene='pick'; render(); return; }
+  runButton(b,null);
+}
+function jailRoll(){
+  const p=cur();
+  startDice(2, p.name+' intenta salir del calabozo', vals=>{
+    const a=vals[0], b=vals[1];
+    if(a===b){ p.jail=false; S.log.unshift(p.name+' saca dobles y sale de la cárcel'); moveTo(p, a+b, ()=>openSquare(p)); }
+    else { const ctx=newCtx(); ctx.lines.push(p.name+' sigue en el calabozo'); showResult(ctx,{dice:[a,b],pre:'Sacó '+a+' y '+b+'. No son dobles.',sq:10}); }
+  });
+}
+function jailDrink(){
+  const p=cur(); const ctx=newCtx(); p.jail=false; p.tragos+=4;
+  ctx.lines.push(p.name+' se bebe el vaso de penalti de un trago (4 tragos) y sale de la cárcel');
+  ctx.lines.push('Pierde el resto del turno');
+  showResult(ctx,{sq:10});
+}
+
+/* ====================================================== fraude y ajustes */
+function applyFraud(pid,n,lbl){
+  const p=pById(pid); if(!p) return; p.fraudes++; p.tragos+=n;
+  S.log.unshift('FRAUDE ELECTORAL: '+p.name+' bebe '+lbl); S.log=S.log.slice(0,12);
+  toast('Fraude electoral: '+p.name+' bebe '+lbl);
+  S.modal=null; save(); render();
+}
+function adjust(pid,field,d){
+  const p=pById(pid); if(!p) return;
+  if(field==='pos'){ p.pos=Math.max(1,Math.min(49,p.pos+d)); if(p.pos!==10) p.jail=false; }
+  if(field==='tragos') p.tragos=Math.max(0,p.tragos+d);
+  save(); render();
+}
+
+
+/* ====================================================== cámara */
+let built=false, builtCols=0, barPx=72, lastCam='', lastHud=null, lastLayer=null, lastTop=null;
+const CAM_SCENES={overview:1,zoom:1,move:1};
+function colsNow(){ return portrait()?5:10; }
+function setBar(){
+  const H=ROOT.clientHeight||window.innerHeight; let b=portrait()?180:Math.round(Math.max(60,Math.min(100,H*0.2)));
+  if(S.notes.length && CAM_SCENES[S.scene]) b+=Math.round(Math.max(28,H*0.075));
+  barPx=b; const a=$('#app'); if(a) a.style.setProperty('--bar',b+'px');
+}
+function camTarget(){
+  const cam=$('#sn-cam'); const fit={z:1,x:0,y:0};
+  if(!cam||S.scene==='overview'||S.scene==='intro'||S.scene==='present'||!cur()) return fit;
+  const W=cam.clientWidth, H=cam.clientHeight;
+  const cell=ROOT.querySelector('.cell[data-n="'+cur().pos+'"]'); if(!cell) return fit;
+  const z=builtCols===10?2.5:1.9; const bl=cell.offsetParent?cell.offsetParent.clientLeft:0;
+  const cx=bl+cell.offsetLeft+cell.offsetWidth/2, cy=bl+cell.offsetTop+cell.offsetHeight/2;
+  let x=W/2-cx*z, y=H/2-cy*z;
+  x=Math.min(0,Math.max(W-W*z,x)); y=Math.min(0,Math.max(H-H*z,y));
+  return {z:z,x:x,y:y};
+}
+function camApply(smooth, force){
+  const cam=$('#sn-cam'); if(!cam) return;
+  if(!force && !CAM_SCENES[S.scene]) return;
+  const t=camTarget(); const tr='translate('+t.x.toFixed(1)+'px,'+t.y.toFixed(1)+'px) scale('+t.z.toFixed(4)+')';
+  if(tr===lastCam) return;
+  cam.style.transitionDuration = smooth ? (S.scene==='move' ? '.5s' : '1.2s') : '0s';
+  cam.style.transform=tr; lastCam=tr;
+}
+
+/* ====================================================== tablero */
+const ROT=[-1.1,.7,-.4,1,-.8,.3,.9,-.6,.2,-1];
+function boardH(cols){
+  const rows=50/cols;
+  let h='<div class="board" style="--cols:'+cols+';--rows:'+rows+'">';
+  SQ.forEach(sq=>{
+    const i=sq.n-1, r=Math.floor(i/cols); let c=i%cols; if(r%2===1) c=cols-1-c;
+    const k=sq.k||'n'; let st='grid-column:'+(c+1)+';grid-row:'+(rows-r)+';--rot:'+ROT[(sq.n*7)%10]+'deg;';
+    let avs='';
+    if(k==='trap'){ st+='--sc:'+byId[sq.who[0]].acc+';'; }
+    if(k==='duel'){ st+='--sc:linear-gradient(90deg,'+byId[sq.who[0]].acc+' 50%,'+byId[sq.who[1]].acc+' 50%);'; }
+    if(k==='trap'||k==='duel') avs='<span class="avs">'+sq.who.map(w=>head(w)).join('')+'</span>';
+    h+='<button class="cell k-'+(k==='n'?'norm':k)+'" style="'+st+'" data-act="cell" data-n="'+sq.n+'" aria-label="Casilla '+sq.n+': '+esc(sq.t)+'">'+
+       '<span class="st"><span class="num">'+sq.n+'</span>'+avs+'</span>'+
+       '<span class="lab"><span>'+esc(sq.s)+'</span></span><span class="toks"></span></button>';
+  });
+  h+='<svg id="sn-ring" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="'+loopPath(50,50,47,46,3,1.18)+'"/></svg>';
+  return h+'</div>';
+}
+function updateBoard(){
+  const act=cur();
+  ROOT.querySelectorAll('.cell').forEach(cell=>{
+    const n=+cell.dataset.n; const here=S.players.filter(p=>p.pos===n);
+    if(act) here.sort((a,b)=>(a.id===act.id)-(b.id===act.id));
+    const cls='toks'+(here.length>6?' lots':here.length>3?' many':'');
+    const h=here.map(p=>'<span class="tok'+(act&&p.id===act.id?' me':'')+'" style="--bg-c:'+byId[p.char].bg+';--c:'+byId[p.char].acc+'" title="'+esc(p.name)+'">'+tokSvg(p.char)+'</span>').join('');
+    const box=cell.querySelector('.toks');
+    if(box.dataset.h!==cls+h){ box.innerHTML=h; box.className=cls; box.dataset.h=cls+h; }
+    cell.classList.toggle('cur', !!act && act.pos===n);
+  });
+  const ring=$('#sn-ring'); const cc=act&&ROOT.querySelector('.cell[data-n="'+act.pos+'"]');
+  if(ring&&cc){ const px=cc.offsetWidth*.1, py=cc.offsetHeight*.1;
+    ring.style.left=(cc.offsetLeft-px)+'px'; ring.style.top=(cc.offsetTop-py)+'px'; ring.style.width=(cc.offsetWidth+2*px)+'px'; ring.style.height=(cc.offsetHeight+2*py)+'px'; ring.style.display=''; }
+  else if(ring) ring.style.display='none';
+}
+
+/* ====================================================== vistas */
+function titleH(){
+  return '<div class="title"><div class="meta"><span>Un juego de mesa para la tele</span><span>Soria Nación</span><span>2035</span></div>'+
+  '<div class="tgrid"><div class="tl"><div class="top">'+RMARK+'<h1 class="logo">Soria<br><span>Nación</span></h1></div>'+
+  '<div class="eyebrow">Política, traiciones, chupitos y crisis de identidad</div>'+
+  '<div class="concept"><p><b>Concepto:</b> diez candidatos radicales, una provincia y ninguna vergüenza.</p><p><b>Perfecto para:</b> de 2 a 10 jugadores, una tele y un vaso de penalti.</p></div>'+
+  '<div class="menu">'+(S.hasSave?'<button class="btn gold big" data-primary data-act="resume">Continuar partida</button>':'')+
+  '<button class="btn '+(S.hasSave?'':'gold ')+'big"'+(S.hasSave?'':' data-primary')+' data-act="setup">Nueva partida'+IC_NEXT+'</button>'+
+  '<button class="btn sm" data-act="rules">Reglas</button><button class="btn sm" data-act="fs">Pantalla completa</button></div>'+
+  '<p class="hint">Ábrelo en el navegador de la tele, en un portátil conectado o en el móvil. Con mando o teclado: flechas para moverte, OK o Intro para elegir, F para pantalla completa.</p></div>'+
+  '<div class="tr"><div class="pcard">'+poster('patch',{lines:['¡SORIA','LIBRE!'],mini:'edu',boil:true,k:'title',alt:'Cartel de campaña: Don Patch grita ¡Soria libre!'})+'</div></div></div></div>';
+}
+function setupH(){
+  const st=S.setup; const n=Object.keys(st.sel).filter(k=>st.sel[k]).length;
+  return '<div class="setup paper"><header><div><div class="eyebrow">Reparto de papeles</div><h2>Elige a los candidatos</h2></div><p>Marca quién juega y escribe el nombre de quien lo interpreta. De 2 a 10.</p></header>'+
+  '<div class="scroll"><div class="tiles">'+CH.map(c=>{ const on=!!st.sel[c.id];
+    return '<div class="tile '+(on?'':'off')+'" style="--c:'+c.acc+'">'+head(c.id)+'<div class="nmw"><div class="nm">'+esc(c.name)+'</div><div class="rl">'+esc(c.role)+'</div></div>'+
+    '<input type="text" id="name-'+c.id+'" maxlength="14" placeholder="Nombre del jugador" aria-label="Nombre del jugador para '+esc(c.name)+'" data-name="'+c.id+'" value="'+esc(st.names[c.id]||'')+'">'+
+    '<label class="sw"><input type="checkbox" id="sel-'+c.id+'" data-sel="'+c.id+'" '+(on?'checked':'')+'> Juega</label>'+
+    '</div>'; }).join('')+'</div></div>'+
+  '<footer class="wave"><button class="btn ink sm" data-act="title">Volver</button><label class="sw"><input type="checkbox" id="order" data-order '+(st.order?'checked':'')+'> Turnos al azar</label><span class="sp"></span>'+
+  '<button class="btn gold big" data-primary data-act="start" '+(n<2?'disabled':'')+'>Empezar con '+n+IC_NEXT+'</button></footer></div>';
+}
+function hudH(){
+  if(!CAM_SCENES[S.scene]||!cur()) return '';
+  const p=cur(); const c=byId[p.char]; const sq=SQ[p.pos-1];
+  const notes = S.notes.length ? '<div class="nts">'+S.notes.map(n=>'<span class="nt">'+esc(n.txt)+'</span>').join('')+'</div>' : '';
+  if(S.scene==='overview'){
+    return '<div class="splash" style="--c:'+c.acc+'" data-k="'+S.turnKey+'">'+head(p.char)+'<div><small>Turno de</small><b class="scr" style="--sc:'+c.mid+';--so:.5">'+esc(p.name)+'</b><small>'+esc(c.name)+', '+esc(c.role.toLowerCase())+'</small></div></div>'+
+     '<div class="bar wave">'+notes+'<div class="r1">'+head(p.char)+'<div class="pi"><b>Turno de '+esc(p.name)+'</b><span>'+esc(c.name)+' · casilla '+p.pos+(p.jail?' · en la cárcel':'')+'</span></div>'+
+     '<button class="btn sm" data-act="score">Marcador</button><button class="btn sm fraud" data-act="fraud">Fraude</button><button class="btn sm" data-act="settings">Menú</button>'+
+     '<button class="btn gold cta" data-primary data-act="tozoom">Siguiente'+IC_NEXT+'</button></div></div>';
+  }
+  if(S.scene==='zoom'){
+    return '<div class="bar wave">'+notes+'<div class="r1">'+head(p.char)+'<div class="pi"><b>'+esc(p.name)+(p.jail?' está en la cárcel':' · casilla '+p.pos)+'</b><span>'+esc(sq.t)+'</span></div>'+
+     '<button class="btn sm" data-act="tooverview">Tablero</button><button class="btn sm fraud" data-act="fraud">Fraude</button>'+
+     '<button class="btn gold cta" data-primary data-act="roll">'+(p.jail?'Intentar salir':'Tirar el dado'+IC_DIE)+'</button></div></div>';
+  }
+  return '<div class="bar wave">'+notes+'<div class="r1">'+head(p.char)+'<div class="pi"><b>'+esc(S.moveMsg)+'</b><span>'+esc(c.name)+'</span></div></div></div>';
+}
+function dots(n,i){ let h='<div class="dots" aria-hidden="true">'; for(let k=0;k<n;k++) h+='<i class="'+(k===i?'on':'')+'"></i>'; return h+'</div>'; }
+function layerH(){
+  const sc=S.scene;
+  if(sc==='intro'){
+    const s=INTRO[S.slide]; const last=S.slide===INTRO.length-1;
+    return '<div class="scene sc-intro" data-k="'+S.slide+'"><div class="meta"><span>Contexto histórico</span><span>Para leer en voz alta</span><span>'+(S.slide+1)+' / '+INTRO.length+'</span></div>'+
+     '<div class="ibody"><div class="icol"><h1 class="k">'+esc(s.k)+'</h1><div class="tx">'+
+     s.p.map(x=>'<p>'+x+'</p>').join('')+(s.chips?'<div class="chips3"><span>Extremadura</span><span>Valladolid</span><span class="so scr">Soria</span></div>':'')+(s.p2||[]).map(x=>'<p>'+x+'</p>').join('')+'</div>'+
+     '<div class="snav">'+(S.slide>0?'<button class="btn ink sm" data-act="iprev">Atrás</button>':'')+'<button class="btn ink sm" data-act="iskip">Saltar</button>'+
+     '<button class="btn gold big" data-primary data-act="inext">'+(last?(S.introReturn?'Volver a la partida':'Los candidatos'):'Siguiente')+IC_NEXT+'</button></div></div>'+
+     '<div class="pcol"><div class="pcard">'+poster(s.art[0],{lines:s.art[1],k:'i'+S.slide,boil:true,alt:'Ilustración: '+byId[s.art[0]].name+' dice '+s.art[1].join(' ')})+'</div></div></div></div>';
+  }
+  if(sc==='present'){
+    const p=S.players[S.slide]; const c=byId[p.char]; const last=S.slide===S.players.length-1;
+    return '<div class="scene sc-present" style="--c:'+c.acc+'" data-k="'+S.slide+'"><div class="pa"><div class="pcard">'+poster(p.char,{boil:true})+'</div><span class="numb" aria-hidden="true">'+(S.slide+1)+'</span></div><div class="pb">'+
+     '<div class="pbody"><div class="eyebrow">Candidato '+(S.slide+1)+' de '+S.players.length+' · juega en el turno '+(S.slide+1)+'</div><h2 class="sq">'+esc(c.name)+'</h2><div class="role">'+esc(c.role)+'</div>'+
+     '<div class="by">Lo interpreta: '+esc(p.name)+'</div><p class="ag">'+esc(c.ag)+'</p><p class="q">'+esc(c.quote)+'</p></div>'+
+     '<div class="snav">'+(S.slide>0?'<button class="btn ink sm" data-act="pprev">Atrás</button>':'')+'<button class="btn ink sm" data-act="pskip">Saltar</button>'+
+     '<button class="btn gold big" data-primary data-act="pnext">'+(last?'¡A votar!':'Siguiente')+IC_NEXT+'</button></div></div></div>';
+  }
+  if(sc==='dice'){
+    const p=cur(); const d=S.dice; const c=byId[p.char]; const sd=hash('D'+p.char);
+    const mot=(flip)=>'<svg class="mot" viewBox="0 0 60 80" aria-hidden="true" style="'+(flip?'transform:scaleX(-1)':'')+'"><path d="M50 12 C30 20 22 32 20 40"/><path d="M52 34 C40 38 34 44 32 52"/><path d="M48 58 C40 60 36 64 34 70"/></svg>';
+    return '<div class="scene sc-dice'+(d.done?'':' rolling')+'"><svg class="blob" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#sn-crayon)"><path d="'+scribble(200,150,186,128,sd,13)+'" fill="none" stroke="'+c.mid+'" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/></g></svg>'+
+     '<div class="who">'+head(p.char)+'<span>'+esc(d.title)+'</span></div>'+
+     '<div class="row '+(d.n===2?'two':'')+'">'+mot(1)+d.vals.map(v=>'<div class="die bigdie'+(d.done?' land':'')+'">'+pips(v)+'</div>').join('')+mot(0)+'</div>'+
+     '<div class="res'+(d.done?' on scr':'')+'" aria-live="assertive">'+(d.done?esc(d.res):'&nbsp;')+'</div></div>';
+  }
+  if(sc==='card'){
+    const sq=SQ[S.card.sq-1]; const p=cur(); const c=byId[p.char]; const v=S.card.view;
+    let extra='';
+    if(sq.vocab){ extra='<div class="alt"><b>Vocabulario de cada candidato</b><br>'+S.players.map(q=>esc(byId[q.char].name)+': '+esc(byId[q.char].vocab)).join('<br>')+'</div>'; }
+    return shell({acc:sqAcc(sq),no:sq.n,kd:esc(v.kindLabel)+' · turno de '+esc(p.name),title:esc(sq.t),art:p.char,cap:esc(p.name)+' es '+esc(c.name)+', '+esc(c.role.toLowerCase()),
+      body:(v.banner?'<div class="banner'+(v.other?' other':'')+'">'+esc(v.banner)+'</div>':'')+'<p>'+esc(v.text)+'</p>'+extra,
+      acts:v.btns.map((b,i)=>'<button class="btn '+(b.c||'')+'"'+(i===0?' data-primary':'')+' data-act="btn" data-i="'+i+'">'+esc(b.l)+'</button>').join('')+'<button class="btn ink" data-act="fraud">Denunciar fraude</button>'});
+  }
+  if(sc==='result'){
+    const r=S.result; const p=cur(); const c=byId[p.char]; const sq=r.sq?SQ[r.sq-1]:null;
+    return shell({acc:c.acc,no:r.sq||'!',kd:'Resultado · turno de '+esc(p.name),title:esc(sq?sq.t:'Resultado'),art:p.char,cap:esc(p.name),
+      body:(r.dice?'<div class="drow">'+r.dice.map(dieSm).join('')+'</div>':'')+(r.pre?'<p>'+esc(r.pre)+'</p>':'')+'<div class="lines">'+r.lines.map(l=>'<div>'+esc(l)+'</div>').join('')+'</div>',
+      acts:'<button class="btn gold big" data-primary data-act="after">Continuar'+IC_NEXT+'</button>'});
+  }
+  if(sc==='pick'){
+    const self=cur(); const opts=S.players.filter(p=>!(S.pick.b.px&&p===self));
+    return shell({acc:'#6E3A93',no:S.card?S.card.sq:'?',kd:'Elige jugador',title:esc(S.pick.title),
+      raw:'<div class="picks">'+opts.map(p=>'<button class="pick" data-act="picked" data-id="'+p.id+'">'+head(p.char)+'<div><b>'+esc(p.name)+'</b><span>'+esc(byId[p.char].name)+'</span></div></button>').join('')+'</div>',
+      acts:'<button class="btn" data-act="pickback">Volver a la carta</button>'});
+  }
+  if(sc==='jail'){
+    const p=cur();
+    return shell({acc:'#3a3a3a',no:10,kd:'Cárcel · turno de '+esc(p.name),title:'El Calabozo Vallisoletano',art:p.char,cap:esc(p.name)+' sigue entre rejas',
+      body:'<p>Para salir tienes dos opciones:</p><p><span class="hl">Tirar dos dados.</span> Si sacas dobles, sales y avanzas lo que sumen.</p><p><span class="hl">Beberte el vaso de penalti de un trago.</span> Sales, pero pierdes el resto del turno.</p>',
+      acts:'<button class="btn gold" data-primary data-act="jailroll">Tirar dos dados</button><button class="btn fraud" data-act="jaildrink">Beber el penalti y salir</button><button class="btn ink" data-act="tozoom">Volver</button>'});
+  }
+  return '';
+}
+function shell(o){
+  return '<div class="scene sc-card" style="--c:'+o.acc+'"><div class="hdr wb"><span class="no">'+o.no+'</span><div class="ht"><div class="eyebrow">'+o.kd+'</div><h2 class="sq">'+o.title+'</h2></div></div>'+
+   (o.raw ? '<div class="main noart">'+o.raw+'</div>' :
+   '<div class="main'+(o.art?'':' noart')+'">'+(o.art?'<div class="art">'+artL(o.art)+'<div class="cap">'+o.cap+'</div></div>':'')+'<div class="txt">'+o.body+'</div></div>')+
+   '<div class="acts wave">'+o.acts+'</div></div>';
+}
+function modalH(){
+  const m=S.modal; if(!m) return '';
+  if(m.t==='fraud'){
+    const sel=m.sel; const dis=sel?'':'disabled';
+    return '<div class="ov"><div class="card" role="dialog" aria-label="Fraude electoral" style="--c:#EF4B45"><div class="hdr"><h2>Fraude electoral</h2></div>'+
+     '<div class="sheet"><p>Alguien ha titubeado, se ha reído o ha hablado como su Yo Real. ¿Quién ha sido?</p></div>'+
+     '<div class="picks">'+S.players.map(p=>'<button class="pick'+(sel===p.id?' sel':'')+'" aria-pressed="'+(sel===p.id)+'" data-act="fsel" data-id="'+p.id+'">'+head(p.char)+'<div><b>'+esc(p.name)+'</b><span>'+esc(byId[p.char].name)+'</span></div></button>').join('')+'</div>'+
+     '<div class="acts wave"><button class="btn fraud" data-act="fpen" data-n="2" data-l="2 tragos" '+dis+'>2 tragos</button><button class="btn fraud" data-act="fpen" data-n="3" data-l="un hidalgo" '+dis+'>Hidalgo</button><button class="btn fraud" data-act="fpen" data-n="4" data-l="un vaso de penalti" '+dis+'>Vaso de penalti</button><button class="btn" data-act="closem">Cancelar</button></div></div></div>';
+  }
+  if(m.t==='info'){
+    const sq=SQ[m.n-1]; let body;
+    if(sq.k==='trap'||sq.k==='duel') body='<p><b>Si cae '+sq.who.map(w=>esc(byId[w].name)).join(' o ')+':</b> '+esc(sq.mine)+'</p><p><b>Cualquier otro:</b> '+esc(sq.other)+'</p>';
+    else body='<p>'+esc(sq.x)+'</p>';
+    return '<div class="ov"><div class="card" role="dialog" aria-label="Casilla '+sq.n+'" style="--c:'+sqAcc(sq)+'"><div class="hdr"><span class="no">'+sq.n+'</span><h2>'+esc(sq.t)+'</h2></div><div class="sheet">'+body+'</div><div class="acts wave"><button class="btn" data-act="closem">Cerrar</button></div></div></div>';
+  }
+  if(m.t==='score'){
+    const rows=S.players.map((q,i)=>{ const qc=byId[q.char];
+      return '<div class="pl'+(i===S.cur?' act':'')+'">'+head(q.char)+'<div class="t"><b>'+esc(q.name)+(q.jail?'<span class="pill j">cárcel</span>':'')+(q.skip?'<span class="pill j">sin turno</span>':'')+'</b><span>'+esc(qc.name)+', '+esc(qc.role.toLowerCase())+'</span></div>'+
+       '<div class="stat"><div><b>'+q.pos+'</b><small>casilla</small></div><div><b>'+q.tragos+'</b><small>tragos</small></div><div><b>'+q.fraudes+'</b><small>fraudes</small></div></div></div>'; }).join('');
+    return '<div class="ov"><div class="card" role="dialog" aria-label="Marcador" style="--c:#6E3A93"><div class="hdr"><h2>Marcador de la vergüenza</h2></div><div class="sheet"><div class="score">'+rows+'</div></div><div class="acts wave"><button class="btn gold" data-act="closem">Cerrar</button></div></div></div>';
+  }
+  if(m.t==='rules') return sheetH('Reglas',rulesH());
+  if(m.t==='settings'){
+    const rows=S.players.map(p=>{ const f=(field,v,lbl)=>'<span class="ctl"><button class="btn" data-act="adj" data-id="'+p.id+'" data-f="'+field+'" data-d="-1" aria-label="Quitar '+lbl+' a '+esc(p.name)+'">−</button><output>'+v+'</output><button class="btn" data-act="adj" data-id="'+p.id+'" data-f="'+field+'" data-d="1" aria-label="Añadir '+lbl+' a '+esc(p.name)+'">+</button></span>';
+      return '<div class="nm">'+esc(p.name)+'</div><div>Casilla '+f('pos',p.pos,'casilla')+'</div><div>Tragos '+f('tragos',p.tragos,'tragos')+'</div>'; }).join('');
+    return '<div class="ov"><div class="card" role="dialog" aria-label="Menú" style="--c:#6E3A93"><div class="hdr"><h2>Menú</h2></div><div class="sheet"><h3>Corregir marcador</h3><div class="adj">'+rows+'</div>'+
+      '<div class="cfg"><button class="btn sm" data-act="replay">Repetir la introducción</button><button class="btn sm" data-act="rules">Reglas</button><button class="btn sm" data-act="fs">Pantalla completa</button><button class="btn sm" data-act="newgame">Terminar y empezar otra</button></div></div><div class="acts wave"><button class="btn gold" data-primary data-act="closem">Volver al juego</button></div></div></div>';
+  }
+  return '';
+}
+function sheetH(title,body){
+  return '<div class="ov"><div class="card" role="dialog" aria-label="'+title+'" style="--c:#6E3A93"><div class="hdr"><h2>'+title+'</h2></div><div class="sheet">'+body+'</div><div class="acts wave"><button class="btn gold" data-act="closem">Cerrar</button></div></div></div>';
+}
+function rulesH(){
+  return '<h3>La regla de oro</h3><p>Durante todo el juego, y sobre todo en las casillas trampa, estás obligado a actuar como tu personaje político, traicionando a tu Yo Real. Si titubeas, te da la risa floja, abandonas tus ideales en un debate o alguien consigue sacarte de tus casillas, cometes <span class="hl">fraude electoral</span>.</p>'+
+  '<p>El fraude se castiga con humillación pública y el castigo máximo: un vaso de penalti, un hidalgo o los tragos que dicte la casilla. Se puede denunciar en cualquier momento con el botón rojo.</p>'+
+  '<h3>Cómo va cada turno</h3><ul><li>Sale el tablero entero con el jugador al que le toca. Pulsa Siguiente.</li>'+
+  '<li>La cámara se acerca a su ficha. Pulsa Tirar el dado.</li>'+
+  '<li>El dado ocupa toda la pantalla, la ficha avanza casilla a casilla y se abre la carta de esa casilla.</li>'+
+  '<li>En las casillas trampa, si es la tuya actúas como tu personaje. Si es de otro, se aplica «cualquier otro».</li>'+
+  '<li>Los botones de la carta mueven las fichas y anotan los tragos solos. Al terminar, pasa el turno.</li></ul>'+
+  '<h3>Casillas especiales</h3><ul><li>Si caes en la trampa de un candidato que no juega esta noche, te toca suplantarlo.</li><li>No se puede pasar de la 49: todos pasan por el Referéndum. Con mayoría de Sí, ganas.</li><li>De la cárcel solo se sale sacando dobles o bebiendo el vaso de penalti de un trago.</li></ul>'+
+  '<h3>Mando y teclado</h3><p>El botón principal de cada paso ya viene seleccionado: pulsa OK en el mando o Intro en el teclado. Las flechas mueven la selección, Escape cierra ventanas y F pone pantalla completa.</p><h3>En el marcador</h3><p>Un hidalgo cuenta como 3 tragos y un vaso de penalti como 4. Bebed con cabeza y sin presión.</p>';
+}
+function winH(){
+  const p=pById(S.over); const c=byId[p.char]; let conf='';
+  const cols=['#EF4B45','#B98AD6','#D9A93E','#3E9B57','#161616'];
+  for(let i=0;i<34;i++){ const k=i%4, col=cols[i%5];
+    const shape = k===0 ? star(12,12,10,col,1.6) : k===1 ? '<path d="M2 15 Q7 2 12 12 T22 9" fill="none" stroke="'+col+'" stroke-width="3.5" stroke-linecap="round"/>' : k===2 ? '<path d="'+loopPath(12,12,7,7,i,1.1)+'" fill="none" stroke="'+col+'" stroke-width="3"/>' : '<path d="M5 6 L19 18 M18 5 L6 19" stroke="'+col+'" stroke-width="3.5" stroke-linecap="round"/>';
+    conf+='<svg class="conf" viewBox="0 0 24 24" aria-hidden="true" style="left:'+((i*29)%100)+'%;animation-duration:'+(4+(i%6)*0.7).toFixed(1)+'s;animation-delay:-'+((i*0.53)%7).toFixed(2)+'s">'+shape+'</svg>'; }
+  return '<div class="win" role="alertdialog" aria-label="Victoria de '+esc(p.name)+'">'+(RM?'':conf)+'<div class="in"><div class="eyebrow">Escrutinio al 100 % · República Soriana</div><h1>¡Gloria al<br><span>Presidente!</span></h1>'+
+  '<p>'+esc(p.name)+', como '+esc(c.name)+', es el nuevo dictador supremo de Soria. Valladolid capitula.</p><p>Todos los demás: terminaos los vasos de penalti y <span class="hl">reverencia formal</span>.</p>'+
+  '<div class="row"><button class="btn gold big" data-primary data-act="rematch">Revancha'+IC_NEXT+'</button><button class="btn ink" data-act="title">Portada</button></div></div>'+
+  '<div class="pw"><div class="pcard">'+poster(p.char,{boil:true,crown:true,lines:['¡VIVA','SORIA LIBRE!'],k:'win',alt:esc(c.name)+' coronado'})+'</div></div></div>';
+}
+
+/* ====================================================== render */
+function render(){
+  const root=APP; const fa=document.activeElement; const fid=fa&&ROOT.contains(fa)&&fa.id?fa.id:null;
+  if(S.screen!=='game'){
+    built=false; lastHud=lastLayer=lastTop=null; lastCam='';
+    root.style.removeProperty('--bar');
+    root.innerHTML=(S.screen==='title'?titleH():setupH())+(S.modal?'<div id="sn-top">'+modalH()+'</div>':'');
+    afterRender(fid); return;
+  }
+  const cols=colsNow();
+  if(!built||builtCols!==cols){
+    root.innerHTML='<div id="sn-stage"><div id="sn-cam">'+boardH(cols)+'</div></div><div id="sn-hud"></div><div id="sn-layer"></div><div id="sn-top"></div>';
+    built=true; builtCols=cols; lastHud=lastLayer=lastTop=null; lastCam='';
+    setBar(); updateBoard(); camApply(false,true);
+  }
+  setBar(); updateBoard();
+  const hh=hudH(); if(hh!==lastHud){ $('#sn-hud').innerHTML=hh; lastHud=hh; }
+  const lh=layerH(); if(lh!==lastLayer){ $('#sn-layer').innerHTML=lh; lastLayer=lh; }
+  const th=modalH()+(S.over?winH():''); if(th!==lastTop){ $('#sn-top').innerHTML=th; lastTop=th; }
+  camApply(true); afterRender(fid);
+}
+
+/* ====================================================== foco, mando de la tele y teclado */
+let lastFocusKey='';
+function activeScope(){
+  if(S.over||S.modal) return $('#sn-top')||APP;
+  if(S.screen==='game') return $('#sn-layer .scene')||$('#sn-hud');
+  return APP;
+}
+function afterRender(fid){
+  const key=[S.screen,S.scene,S.slide,S.modal&&S.modal.t,!!S.over,S.turnKey,S.dice&&S.dice.done,S.card&&S.card.sq,S.result&&S.result.lines.join()].join('|');
+  if(key===lastFocusKey){ if(fid){ const el=document.getElementById(fid); if(el&&ROOT.contains(el)&&document.activeElement!==el){ try{ el.focus({preventScroll:true}); }catch(e){} } } return; }
+  lastFocusKey=key;
+  const sc=activeScope(); if(!sc) return;
+  const el=sc.querySelector('[data-primary]:not([disabled])')||sc.querySelector('button:not([disabled])');
+  if(el){ try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } }
+}
+ROOT.addEventListener('keydown',function(e){
+  const ae=document.activeElement; const typing=ae&&ae.tagName==='INPUT'&&ae.type==='text';
+  if(e.key==='Escape'&&S.modal){ S.modal=null; render(); e.preventDefault(); return; }
+  if(typing) return;
+  if(e.key==='f'||e.key==='F'){ goFullscreen(false); return; }
+  const dirs={ArrowRight:[1,0],ArrowLeft:[-1,0],ArrowDown:[0,1],ArrowUp:[0,-1]}; const d=dirs[e.key]; if(!d) return;
+  const sc=activeScope(); if(!sc) return;
+  const items=Array.prototype.filter.call(sc.querySelectorAll('button:not([disabled]),input'),el=>el.offsetParent!==null&&!el.closest('.board'));
+  if(!items.length) return; e.preventDefault();
+  const cur0=items.indexOf(ae)>=0?ae:null;
+  if(!cur0){ items[0].focus(); return; }
+  const r0=cur0.getBoundingClientRect(), x0=r0.left+r0.width/2, y0=r0.top+r0.height/2; let best=null, bs=Infinity;
+  items.forEach(el=>{ if(el===cur0) return; const r=el.getBoundingClientRect(); const dx=r.left+r.width/2-x0, dy=r.top+r.height/2-y0;
+    const along=dx*d[0]+dy*d[1]; if(along<=4) return; const sc2=along+(Math.abs(dx*d[1])+Math.abs(dy*d[0]))*2.5; if(sc2<bs){ bs=sc2; best=el; } });
+  if(best) best.focus();
+});
+
+/* ====================================================== acciones */
+function startGame(){
+  const st=S.setup; let ids=CH.map(c=>c.id).filter(id=>st.sel[id]);
+  if(ids.length<2) return;
+  if(st.order) ids=shuffle(ids);
+  S.players=ids.map((id,i)=>({id:'p'+i,char:id,name:(st.names[id]||'').replace(/[<>&"'`\\]/g,'').trim()||byId[id].name,pos:1,jail:false,skip:0,tragos:0,fraudes:0}));
+  S.cur=0; S.notes=[]; S.log=[]; S.modal=null; S.over=null; S.lock=false; S.card=null; S.result=null;
+  S.screen='game'; S.scene='intro'; S.slide=0; S.introReturn=false; S.turnKey++;
+  save(); render();
+}
+function rematch(){
+  S.players.forEach(p=>{p.pos=1;p.jail=false;p.skip=0;p.tragos=0;p.fraudes=0;});
+  if(S.setup.order) S.players=shuffle(S.players);
+  S.cur=0; S.notes=[]; S.log=[]; S.modal=null; S.over=null; S.lock=false; S.card=null; S.result=null;
+  S.scene='present'; S.slide=0; S.turnKey++;
+  save(); render();
+}
+function goFullscreen(quiet){
+  try{
+    const d=ROOT;
+    if(document.fullscreenElement){ if(!quiet) document.exitFullscreen(); return; }
+    const pr=(d.requestFullscreen||d.webkitRequestFullscreen).call(d);
+    if(pr&&pr.catch) pr.catch(()=>{ if(!quiet) toast('Este navegador no deja poner pantalla completa aquí'); });
+  }catch(err){ if(!quiet) toast('Este navegador no deja poner pantalla completa aquí'); }
+}
+APP.addEventListener('click',function(e){
+  const t=e.target.closest('[data-act]'); if(!t) return; const a=t.dataset.act; const m=S.modal;
+  switch(a){
+    case 'setup': S.screen='setup'; render(); break;
+    case 'title': S.screen='title'; S.over=null; S.modal=null; load(); render(); break;
+    case 'start': goFullscreen(true); startGame(); break;
+    case 'resume': { const j=load(); if(j){ S.players=j.players; S.cur=j.cur; S.notes=j.notes||[]; S.log=j.log||[]; S.modal=null; S.over=null; S.lock=false; S.screen='game'; S.scene='overview'; S.turnKey++; goFullscreen(true); render(); } break; }
+    case 'rules': S.modal={t:'rules'}; render(); break;
+    case 'inext': if(S.slide<INTRO.length-1){ S.slide++; } else if(S.introReturn){ S.introReturn=false; S.scene='overview'; S.turnKey++; } else { S.scene='present'; S.slide=0; } render(); break;
+    case 'iprev': S.slide=Math.max(0,S.slide-1); render(); break;
+    case 'iskip': if(S.introReturn){ S.introReturn=false; S.scene='overview'; S.turnKey++; } else { S.scene='present'; S.slide=0; } render(); break;
+    case 'pnext': if(S.slide<S.players.length-1){ S.slide++; } else { S.scene='overview'; S.turnKey++; } render(); break;
+    case 'pprev': S.slide=Math.max(0,S.slide-1); render(); break;
+    case 'pskip': S.scene='overview'; S.turnKey++; render(); break;
+    case 'tozoom': if(!S.lock){ S.scene='zoom'; render(); } break;
+    case 'tooverview': if(!S.lock){ S.scene='overview'; render(); } break;
+    case 'roll': rollTurn(); break;
+    case 'cell': if(!S.lock&&(S.scene==='overview'||S.scene==='zoom')&&!S.modal){ S.modal={t:'info',n:+t.dataset.n}; render(); } break;
+    case 'btn': pressBtn(+t.dataset.i); break;
+    case 'after': if(!S.lock) afterResult(); break;
+    case 'picked': { const p=pById(t.dataset.id); runButton(S.pick.b,p); break; }
+    case 'pickback': S.scene='card'; render(); break;
+    case 'jailroll': if(!S.lock) jailRoll(); break;
+    case 'jaildrink': if(!S.lock) jailDrink(); break;
+    case 'fraud': S.modal={t:'fraud',sel:null}; render(); break;
+    case 'fsel': m.sel=t.dataset.id; render(); break;
+    case 'fpen': if(m&&m.sel) applyFraud(m.sel,+t.dataset.n,t.dataset.l); break;
+    case 'closem': S.modal=null; render(); break;
+    case 'score': S.modal={t:'score'}; render(); break;
+    case 'settings': S.modal={t:'settings'}; render(); break;
+    case 'adj': adjust(t.dataset.id,t.dataset.f,+t.dataset.d); break;
+    case 'replay': S.modal=null; S.introReturn=true; S.scene='intro'; S.slide=0; render(); break;
+    case 'newgame': wipe(); S.screen='setup'; S.modal=null; render(); break;
+    case 'rematch': rematch(); break;
+    case 'fs': goFullscreen(false); break;
+  }
+});
+APP.addEventListener('input',function(e){
+  const t=e.target; if(t.dataset.name!==undefined) S.setup.names[t.dataset.name]=t.value;
+});
+APP.addEventListener('change',function(e){
+  const t=e.target;
+  if(t.dataset.sel!==undefined){ S.setup.sel[t.dataset.sel]=t.checked?1:0; render(); }
+  if(t.dataset.order!==undefined){ S.setup.order=t.checked; }
+});
+let rz=null, lastSize='';
+function onResize(){
+  const key=ROOT.clientWidth+'x'+ROOT.clientHeight; if(key===lastSize) return; lastSize=key;
+  clearTimeout(rz); rz=setTimeout(function(){
+    measure();
+    if(S.screen==='game'){
+      if(colsNow()!==builtCols){ built=false; render(); }
+      else { setBar(); lastCam=''; camApply(false,true); render(); }
+    }
+    else if(S.screen==='title') render();
+  },120);
+}
+window.addEventListener('resize',onResize);
+try{ if(window.ResizeObserver) new ResizeObserver(onResize).observe(ROOT); }catch(e){}
+try{ if(navigator.wakeLock&&navigator.wakeLock.request){ navigator.wakeLock.request('screen').catch(()=>{}); } }catch(e){}
+load(); render();
+})();
+</script>
+</body>
+</html>
